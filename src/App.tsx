@@ -3,7 +3,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import Landing from "./pages/Landing";
+import AgentDashboard from "./pages/agent/AgentDashboard";
+import BrowsePlayers from "./pages/agent/BrowsePlayers";
+import PlayerProfile from "./pages/agent/PlayerProfile";
+import PlayerDashboard from "./pages/player/PlayerDashboard";
+import AgentRequests from "./pages/player/AgentRequests";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -15,8 +20,15 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/" element={<Landing />} />
+          {/* Agent Routes */}
+          <Route path="/agent/dashboard" element={<AgentDashboard />} />
+          <Route path="/agent/browse" element={<BrowsePlayers />} />
+          <Route path="/agent/player/:id" element={<PlayerProfile />} />
+          {/* Player Routes */}
+          <Route path="/player/dashboard" element={<PlayerDashboard />} />
+          <Route path="/player/requests" element={<AgentRequests />} />
+          {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
