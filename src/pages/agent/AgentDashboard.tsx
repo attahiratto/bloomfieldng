@@ -1,142 +1,67 @@
 import AgentLayout from "@/components/layouts/AgentLayout";
-import { Users, Inbox, Bookmark, TrendingUp, ArrowRight, Clock } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
-const mockRequests = [
-  { id: 1, player: "Kwame Mensah", type: "Trial", status: "pending", date: "2 hours ago" },
-  { id: 2, player: "Chinedu Okafor", type: "Representation", status: "accepted", date: "1 day ago" },
-  { id: 3, player: "Amadou Diallo", type: "Trial", status: "pending", date: "2 days ago" },
+const mockPlayers = [
+  { id: 1, name: "James Parker", position: "Striker", age: 23, image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&h=250&fit=crop&crop=face" },
+  { id: 2, name: "Luis Gomez", position: "Midfielder", age: 21, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=250&fit=crop&crop=face" },
+  { id: 3, name: "Daniel Martins", position: "Defender", age: 25, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=250&fit=crop&crop=face" },
+  { id: 4, name: "Eric Johnson", position: "Winger", age: 20, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=250&fit=crop&crop=face" },
+  { id: 5, name: "Marco Rossi", position: "Striker", age: 22, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=250&fit=crop&crop=face" },
+  { id: 6, name: "Alex Tanaka", position: "Midfielder", age: 19, image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=250&fit=crop&crop=face" },
 ];
 
 const AgentDashboard = () => {
   return (
     <AgentLayout>
-      <div className="space-y-8">
-        {/* Welcome Section */}
-        <div>
-          <h1 className="font-display text-3xl font-bold mb-2">Welcome back, James</h1>
-          <p className="text-muted-foreground">Here's what's happening with your talent search.</p>
+      <div className="space-y-6">
+        {/* Warning Banner */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600" />
+          <span className="text-sm font-medium text-amber-800">Account Pending Verification</span>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <StatCard
-            icon={<Users className="w-6 h-6" />}
-            label="New Player Profiles"
-            value="24"
-            trend="+12% this week"
-            color="primary"
-          />
-          <StatCard
-            icon={<Inbox className="w-6 h-6" />}
-            label="Pending Requests"
-            value="3"
-            trend="2 awaiting response"
-            color="warning"
-          />
-          <StatCard
-            icon={<Bookmark className="w-6 h-6" />}
-            label="Saved Players"
-            value="18"
-            trend="5 recently active"
-            color="success"
-          />
+        <div className="grid grid-cols-3 gap-4">
+          <Card className="p-5 bg-background border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">Total Players</p>
+            <p className="font-display text-3xl font-bold text-foreground">12,450</p>
+          </Card>
+          <Card className="p-5 bg-background border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">New Today</p>
+            <p className="font-display text-3xl font-bold text-foreground">36</p>
+          </Card>
+          <Card className="p-5 bg-background border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">Shortlisted</p>
+            <p className="font-display text-3xl font-bold text-foreground">18</p>
+          </Card>
         </div>
 
-        {/* Recent Requests */}
-        <div className="card-float p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-xl font-semibold">Recent Requests</h2>
-            <Button variant="ghost" className="text-primary">
-              View All <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-          
-          <div className="space-y-4">
-            {mockRequests.map((request) => (
-              <div 
-                key={request.id}
-                className="flex items-center justify-between p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
-              >
+        {/* Players Grid */}
+        <div className="grid grid-cols-3 gap-4">
+          {mockPlayers.map((player) => (
+            <Link key={player.id} to={`/agent/player/${player.id}`}>
+              <Card className="p-4 bg-background border-border/50 hover:shadow-md transition-shadow cursor-pointer">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                    <span className="font-semibold text-primary">
-                      {request.player.split(' ').map(n => n[0]).join('')}
-                    </span>
+                  <div className="w-28 h-36 rounded-lg overflow-hidden bg-muted flex-shrink-0 border-2 border-primary/20">
+                    <img 
+                      src={player.image} 
+                      alt={player.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div>
-                    <p className="font-medium">{request.player}</p>
-                    <p className="text-sm text-muted-foreground">{request.type} Request</p>
+                    <h3 className="font-display font-semibold text-foreground">{player.name}</h3>
+                    <p className="text-sm text-muted-foreground">{player.position} | Age {player.age}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {request.date}
-                    </p>
-                  </div>
-                  <span className={request.status === 'accepted' ? 'pill-verified' : 'pill-pending'}>
-                    {request.status === 'accepted' ? 'Accepted' : 'Pending'}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA */}
-        <div className="card-float p-8 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-              <h3 className="font-display text-xl font-semibold mb-1">Discover New Talent</h3>
-              <p className="text-muted-foreground">Browse verified player profiles from across Africa.</p>
-            </div>
-            <Link to="/agent/browse">
-              <Button size="lg" className="rounded-xl">
-                Browse Players
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              </Card>
             </Link>
-          </div>
+          ))}
         </div>
       </div>
     </AgentLayout>
-  );
-};
-
-const StatCard = ({ 
-  icon, 
-  label, 
-  value, 
-  trend, 
-  color 
-}: { 
-  icon: React.ReactNode; 
-  label: string; 
-  value: string; 
-  trend: string;
-  color: 'primary' | 'warning' | 'success';
-}) => {
-  const colorClasses = {
-    primary: 'bg-primary/10 text-primary',
-    warning: 'bg-warning/10 text-warning',
-    success: 'bg-success/10 text-success',
-  };
-
-  return (
-    <div className="stat-card">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClasses[color]}`}>
-          {icon}
-        </div>
-        <TrendingUp className="w-4 h-4 text-success" />
-      </div>
-      <p className="font-display text-3xl font-bold mb-1">{value}</p>
-      <p className="text-sm text-muted-foreground mb-1">{label}</p>
-      <p className="text-xs text-muted-foreground">{trend}</p>
-    </div>
   );
 };
 
