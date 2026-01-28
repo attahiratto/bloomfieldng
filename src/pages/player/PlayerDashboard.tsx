@@ -1,188 +1,91 @@
 import PlayerLayout from "@/components/layouts/PlayerLayout";
-import { BadgeCheck, Star, Inbox, Eye, ArrowRight, Shield } from "lucide-react";
+import { BadgeCheck, Inbox, Eye, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+const recentActivity = [
+  { id: 1, agent: "James Davies", type: "Trial Request", time: "2 hours ago", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
+  { id: 2, agent: "Scout Network Ltd", type: "Profile View", time: "1 day ago", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" },
+  { id: 3, agent: "Marcus Sterling", type: "Connected", time: "3 days ago", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" },
+];
 
 const PlayerDashboard = () => {
   return (
     <PlayerLayout>
-      <div className="space-y-8">
-        {/* Welcome Section */}
-        <div className="card-float p-8 hero-gradient">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <h1 className="font-display text-3xl font-bold mb-2">Welcome, Adeola! 👋</h1>
-              <p className="text-muted-foreground">Your profile is looking great. Here's your latest activity.</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="pill-verified">
-                <BadgeCheck className="w-3.5 h-3.5" />
-                Profile Verified
-              </span>
-              <span className="pill-primary">
-                <Star className="w-3.5 h-3.5" />
-                Coach Endorsed
-              </span>
-            </div>
-          </div>
+      <div className="space-y-6">
+        {/* Welcome Banner */}
+        <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3 flex items-center gap-3">
+          <BadgeCheck className="w-5 h-5 text-emerald-600" />
+          <span className="text-sm font-medium text-emerald-800">Profile Verified & Coach Endorsed</span>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <StatCard
-            icon={<BadgeCheck className="w-6 h-6" />}
-            label="Profile Status"
-            value="Verified & Endorsed"
-            description="Your profile is fully complete"
-            color="success"
-          />
-          <StatCard
-            icon={<Inbox className="w-6 h-6" />}
-            label="Agent Requests"
-            value="3"
-            description="2 new this week"
-            color="primary"
-            link="/player/requests"
-          />
-          <StatCard
-            icon={<Eye className="w-6 h-6" />}
-            label="Profile Views"
-            value="47"
-            description="Last 30 days"
-            color="warning"
-          />
+        <div className="grid grid-cols-3 gap-4">
+          <Card className="p-5 bg-background border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">Profile Status</p>
+            <p className="font-display text-2xl font-bold text-foreground">Verified</p>
+          </Card>
+          <Card className="p-5 bg-background border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">Agent Requests</p>
+            <p className="font-display text-3xl font-bold text-foreground">3</p>
+          </Card>
+          <Card className="p-5 bg-background border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">Profile Views</p>
+            <p className="font-display text-3xl font-bold text-foreground">47</p>
+          </Card>
         </div>
 
         {/* Recent Activity */}
-        <div className="card-float p-6">
-          <h2 className="font-display text-xl font-semibold mb-4">Recent Activity</h2>
-          <div className="space-y-4">
-            <ActivityItem
-              title="New request from James Davies"
-              description="Trial opportunity request"
-              time="2 hours ago"
-              type="request"
-            />
-            <ActivityItem
-              title="Profile viewed by Scout Network Ltd"
-              description="Verified scout from England"
-              time="1 day ago"
-              type="view"
-            />
-            <ActivityItem
-              title="Request accepted"
-              description="Connected with Marcus Sterling"
-              time="3 days ago"
-              type="accepted"
-            />
-          </div>
+        <div className="grid grid-cols-3 gap-4">
+          {recentActivity.map((activity) => (
+            <Link key={activity.id} to="/player/requests">
+              <Card className="p-4 bg-background border-border/50 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-muted flex-shrink-0 border-2 border-primary/20">
+                    <img 
+                      src={activity.image} 
+                      alt={activity.agent}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-semibold text-foreground">{activity.agent}</h3>
+                    <p className="text-sm text-muted-foreground">{activity.type}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{activity.time}</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+          ))}
         </div>
 
-        {/* CTA - View Requests */}
-        <div className="card-float p-6 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
+        {/* Pending Requests CTA */}
+        <Card className="p-5 bg-primary/5 border-primary/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Inbox className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-display text-lg font-semibold mb-1">You have 3 pending requests</h3>
-                <p className="text-muted-foreground">Review and respond to agent requests to take the next step.</p>
+                <h3 className="font-display font-semibold text-foreground">3 Pending Requests</h3>
+                <p className="text-sm text-muted-foreground">Review and respond to agent requests</p>
               </div>
             </div>
-            <Link to="/player/requests">
-              <Button size="lg" className="rounded-xl w-full md:w-auto">
-                View Requests
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+            <Link to="/player/requests" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
+              View Requests
             </Link>
           </div>
-        </div>
+        </Card>
 
         {/* Safety Note */}
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-secondary/50">
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-secondary/50">
           <Shield className="w-5 h-5 text-muted-foreground mt-0.5" />
-          <div>
-            <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Your Safety Matters:</strong> Only connect with agents you're comfortable with. 
-              Openfield never asks for upfront fees. Report any suspicious activity immediately.
-            </p>
-          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong className="text-foreground">Your Safety Matters:</strong> Only connect with verified agents. Openfield never asks for upfront fees.
+          </p>
         </div>
       </div>
     </PlayerLayout>
-  );
-};
-
-const StatCard = ({ 
-  icon, 
-  label, 
-  value, 
-  description,
-  color,
-  link,
-}: { 
-  icon: React.ReactNode; 
-  label: string; 
-  value: string; 
-  description: string;
-  color: 'primary' | 'warning' | 'success';
-  link?: string;
-}) => {
-  const colorClasses = {
-    primary: 'bg-primary/10 text-primary',
-    warning: 'bg-warning/10 text-warning',
-    success: 'bg-success/10 text-success',
-  };
-
-  const content = (
-    <div className={`stat-card ${link ? 'hover:shadow-card-hover cursor-pointer transition-shadow' : ''}`}>
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClasses[color]} mb-4`}>
-        {icon}
-      </div>
-      <p className="text-sm text-muted-foreground mb-1">{label}</p>
-      <p className="font-display text-2xl font-bold mb-1">{value}</p>
-      <p className="text-xs text-muted-foreground">{description}</p>
-    </div>
-  );
-
-  return link ? <Link to={link}>{content}</Link> : content;
-};
-
-const ActivityItem = ({ 
-  title, 
-  description, 
-  time, 
-  type 
-}: { 
-  title: string; 
-  description: string; 
-  time: string;
-  type: 'request' | 'view' | 'accepted';
-}) => {
-  const icons = {
-    request: <Inbox className="w-5 h-5" />,
-    view: <Eye className="w-5 h-5" />,
-    accepted: <BadgeCheck className="w-5 h-5" />,
-  };
-
-  const colors = {
-    request: 'bg-primary/10 text-primary',
-    view: 'bg-warning/10 text-warning',
-    accepted: 'bg-success/10 text-success',
-  };
-
-  return (
-    <div className="flex items-center gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${colors[type]}`}>
-        {icons[type]}
-      </div>
-      <div className="flex-1">
-        <p className="font-medium">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-      <p className="text-xs text-muted-foreground">{time}</p>
-    </div>
   );
 };
 
