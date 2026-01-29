@@ -1,9 +1,9 @@
 import AgentLayout from "@/components/layouts/AgentLayout";
-import { Search, Filter, MapPin, Calendar, BadgeCheck, Star, ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Search, Filter, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import ESPNPlayerCard from "@/components/player/ESPNPlayerCard";
 
 const positions = ["All Positions", "Forward", "Midfielder", "Defender", "Goalkeeper"];
 const ages = ["All Ages", "16-18", "19-21", "22-25", "26+"];
@@ -11,12 +11,12 @@ const countries = ["All Countries", "Nigeria", "Ghana", "Senegal", "Cameroon", "
 const availability = ["All", "Available Now", "Open to Trials", "Seeking Agent"];
 
 const mockPlayers = [
-  { id: 1, name: "Kwame Mensah", age: 19, position: "Forward", country: "Ghana", verified: true, endorsed: true, image: null },
-  { id: 2, name: "Chinedu Okafor", age: 21, position: "Midfielder", country: "Nigeria", verified: true, endorsed: false, image: null },
-  { id: 3, name: "Amadou Diallo", age: 18, position: "Defender", country: "Senegal", verified: true, endorsed: true, image: null },
-  { id: 4, name: "Samuel Eto'o Jr", age: 20, position: "Forward", country: "Cameroon", verified: true, endorsed: true, image: null },
-  { id: 5, name: "Brian Ochieng", age: 22, position: "Goalkeeper", country: "Kenya", verified: true, endorsed: false, image: null },
-  { id: 6, name: "Yusuf Ibrahim", age: 17, position: "Midfielder", country: "Nigeria", verified: true, endorsed: true, image: null },
+  { id: 1, name: "Kwame Mensah", age: 19, position: "Forward", country: "Ghana", verified: true, endorsed: true, image: null, stats: { goals: 15, assists: 8, matches: 24 } },
+  { id: 2, name: "Chinedu Okafor", age: 21, position: "Midfielder", country: "Nigeria", verified: true, endorsed: false, image: null, stats: { goals: 6, assists: 14, matches: 28 } },
+  { id: 3, name: "Amadou Diallo", age: 18, position: "Defender", country: "Senegal", verified: true, endorsed: true, image: null, stats: { goals: 2, assists: 5, matches: 22 } },
+  { id: 4, name: "Samuel Eto'o Jr", age: 20, position: "Forward", country: "Cameroon", verified: true, endorsed: true, image: null, stats: { goals: 22, assists: 11, matches: 30 } },
+  { id: 5, name: "Brian Ochieng", age: 22, position: "Goalkeeper", country: "Kenya", verified: true, endorsed: false, image: null, stats: { goals: 0, assists: 1, matches: 26 } },
+  { id: 6, name: "Yusuf Ibrahim", age: 17, position: "Midfielder", country: "Nigeria", verified: true, endorsed: true, image: null, stats: { goals: 9, assists: 12, matches: 20 } },
 ];
 
 const BrowsePlayers = () => {
@@ -85,10 +85,14 @@ const BrowsePlayers = () => {
           </Button>
         </div>
 
-        {/* Player Grid */}
+        {/* Player Grid - ESPN Style */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mockPlayers.map((player) => (
-            <PlayerCard key={player.id} player={player} />
+            <ESPNPlayerCard 
+              key={player.id} 
+              player={player} 
+              linkTo={`/agent/player/${player.id}`}
+            />
           ))}
         </div>
       </div>
@@ -139,58 +143,6 @@ const FilterChip = ({
         </>
       )}
     </div>
-  );
-};
-
-const PlayerCard = ({ player }: { player: typeof mockPlayers[0] }) => {
-  return (
-    <Link to={`/agent/player/${player.id}`}>
-      <div className="card-float-hover p-5 cursor-pointer">
-        {/* Player Avatar */}
-        <div className="flex items-start gap-4 mb-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center text-primary font-display font-bold text-xl">
-            {player.name.split(' ').map(n => n[0]).join('')}
-          </div>
-          <div className="flex-1">
-            <h3 className="font-display font-semibold text-lg">{player.name}</h3>
-            <p className="text-muted-foreground text-sm">{player.position}</p>
-          </div>
-        </div>
-
-        {/* Details */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-          <span className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            {player.age} years
-          </span>
-          <span className="flex items-center gap-1">
-            <MapPin className="w-4 h-4" />
-            {player.country}
-          </span>
-        </div>
-
-        {/* Badges */}
-        <div className="flex items-center gap-2">
-          {player.verified && (
-            <span className="pill-verified">
-              <BadgeCheck className="w-3.5 h-3.5" />
-              Verified
-            </span>
-          )}
-          {player.endorsed && (
-            <span className="pill-primary">
-              <Star className="w-3.5 h-3.5" />
-              Coach Endorsed
-            </span>
-          )}
-        </div>
-
-        {/* View Profile Button */}
-        <Button className="w-full mt-4 rounded-xl" variant="outline">
-          View Profile
-        </Button>
-      </div>
-    </Link>
   );
 };
 

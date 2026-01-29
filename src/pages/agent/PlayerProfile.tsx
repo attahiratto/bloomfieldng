@@ -1,8 +1,9 @@
 import AgentLayout from "@/components/layouts/AgentLayout";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, MapPin, Calendar, Ruler, BadgeCheck, Star, Play, Shield, MessageCircle } from "lucide-react";
+import { ArrowLeft, Play, BadgeCheck, Star, Shield, MessageCircle, Target, Users, Trophy, TrendingUp, Footprints, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import ESPNStatBlock from "@/components/player/ESPNStatBlock";
 
 const mockPlayerData = {
   id: 1,
@@ -26,6 +27,14 @@ const mockPlayerData = {
     goals: 15,
     assists: 8,
     matches: 24,
+    minutesPlayed: 1920,
+    passAccuracy: 84,
+    shotsOnTarget: 42,
+  },
+  seasonStats: {
+    goalsPerGame: 0.63,
+    assistsPerGame: 0.33,
+    rating: 7.8,
   },
   bio: "Passionate forward with excellent pace and finishing ability. Trained at Right to Dream Academy since age 14. Looking for opportunities to develop at a professional club in Europe.",
 };
@@ -36,105 +45,164 @@ const PlayerProfile = () => {
 
   return (
     <AgentLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         {/* Back Button */}
         <Link to="/agent/browse">
-          <Button variant="ghost" className="rounded-xl -ml-2">
+          <Button variant="ghost" className="rounded-xl -ml-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Browse
           </Button>
         </Link>
 
-        {/* Profile Header */}
-        <div className="card-float p-8">
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Avatar / Video Placeholder */}
-            <div className="w-full md:w-48 h-48 rounded-2xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
-              <span className="font-display font-bold text-5xl text-primary">
-                {mockPlayerData.name.split(' ').map(n => n[0]).join('')}
-              </span>
-              <div className="absolute inset-0 bg-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-primary-foreground flex items-center justify-center">
-                  <Play className="w-6 h-6 text-primary fill-primary" />
+        {/* ESPN-Style Hero Section */}
+        <div className="espn-hero rounded-2xl overflow-hidden">
+          {/* Top Accent */}
+          <div className="h-2 espn-hero-accent" />
+          
+          <div className="p-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Player Avatar / Video */}
+              <div className="relative group">
+                <div className="w-48 h-48 rounded-xl bg-gradient-to-br from-red-500/30 to-orange-500/20 flex items-center justify-center border-2 border-white/10">
+                  <span className="font-display font-black text-6xl text-white">
+                    {mockPlayerData.name.split(' ').map(n => n[0]).join('')}
+                  </span>
                 </div>
+                <div className="absolute inset-0 rounded-xl bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                  <div className="w-14 h-14 rounded-full bg-red-500 flex items-center justify-center">
+                    <Play className="w-6 h-6 text-white fill-white ml-1" />
+                  </div>
+                </div>
+                {mockPlayerData.verified && (
+                  <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-green-500 flex items-center justify-center border-4 border-slate-900">
+                    <BadgeCheck className="w-5 h-5 text-white" />
+                  </div>
+                )}
               </div>
-            </div>
 
-            {/* Info */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h1 className="font-display text-3xl font-bold mb-1">{mockPlayerData.name}</h1>
-                  <p className="text-xl text-primary font-medium">{mockPlayerData.position}</p>
+              {/* Player Info */}
+              <div className="flex-1">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="pill-espn text-xs">{mockPlayerData.position}</span>
+                      <span className="pill-espn-gold text-xs">#{mockPlayerData.id}</span>
+                    </div>
+                    <h1 className="font-display text-4xl md:text-5xl font-black text-white mb-2">
+                      {mockPlayerData.name}
+                    </h1>
+                    <div className="flex items-center gap-4 text-white/60 text-sm">
+                      <span>{mockPlayerData.city}, {mockPlayerData.country}</span>
+                      <span>•</span>
+                      <span>{mockPlayerData.age} Years Old</span>
+                      <span>•</span>
+                      <span>{mockPlayerData.height}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
+
+                {/* Quick Stats Row */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
+                    <p className="text-2xl font-black text-white">{mockPlayerData.seasonStats.rating}</p>
+                    <p className="text-xs text-white/50 uppercase tracking-wider">Avg Rating</p>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
+                    <p className="text-2xl font-black text-red-400">{mockPlayerData.seasonStats.goalsPerGame}</p>
+                    <p className="text-xs text-white/50 uppercase tracking-wider">Goals/Game</p>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-3 text-center border border-white/10">
+                    <p className="text-2xl font-black text-orange-400">{mockPlayerData.seasonStats.assistsPerGame}</p>
+                    <p className="text-xs text-white/50 uppercase tracking-wider">Assists/Game</p>
+                  </div>
+                </div>
+
+                {/* Badges */}
+                <div className="flex items-center gap-2 flex-wrap">
                   {mockPlayerData.verified && (
-                    <span className="pill-verified">
-                      <BadgeCheck className="w-3.5 h-3.5" />
-                      Verified
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-green-500/20 text-green-400 text-xs font-bold uppercase tracking-wider">
+                      <BadgeCheck className="w-3 h-3" />
+                      Verified Player
                     </span>
                   )}
                   {mockPlayerData.endorsed && (
-                    <span className="pill-primary">
-                      <Star className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider">
+                      <Star className="w-3 h-3" />
                       Coach Endorsed
                     </span>
                   )}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider">
+                    {mockPlayerData.availability}
+                  </span>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <InfoItem icon={<Calendar className="w-4 h-4" />} label="Age" value={`${mockPlayerData.age} years`} />
-                <InfoItem icon={<MapPin className="w-4 h-4" />} label="Location" value={`${mockPlayerData.city}, ${mockPlayerData.country}`} />
-                <InfoItem icon={<Ruler className="w-4 h-4" />} label="Height" value={mockPlayerData.height} />
-                <InfoItem label="Preferred Foot" value={mockPlayerData.preferredFoot} />
-              </div>
-
-              <div className="pill-verified inline-flex text-sm">
-                {mockPlayerData.availability}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bio */}
-        <div className="card-float p-6">
-          <h2 className="font-display text-lg font-semibold mb-3">About</h2>
-          <p className="text-muted-foreground">{mockPlayerData.bio}</p>
+        {/* Season Statistics - ESPN Style Grid */}
+        <div className="espn-card rounded-2xl overflow-hidden">
+          <div className="h-1 espn-hero-accent" />
+          <div className="p-6">
+            <h2 className="font-display text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-red-400" />
+              2024/25 Season Stats
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <ESPNStatBlock value={mockPlayerData.stats.goals} label="Goals" icon={Target} trend="up" size="md" />
+              <ESPNStatBlock value={mockPlayerData.stats.assists} label="Assists" icon={Users} trend="up" size="md" />
+              <ESPNStatBlock value={mockPlayerData.stats.matches} label="Matches" icon={Trophy} size="md" />
+              <ESPNStatBlock value={mockPlayerData.stats.minutesPlayed} label="Minutes" icon={Timer} size="md" />
+              <ESPNStatBlock value={`${mockPlayerData.stats.passAccuracy}%`} label="Pass Acc" icon={TrendingUp} size="md" />
+              <ESPNStatBlock value={mockPlayerData.stats.shotsOnTarget} label="Shots OT" icon={Footprints} size="md" />
+            </div>
+          </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          <div className="stat-card text-center">
-            <p className="font-display text-3xl font-bold text-primary">{mockPlayerData.stats.goals}</p>
-            <p className="text-sm text-muted-foreground">Goals</p>
-          </div>
-          <div className="stat-card text-center">
-            <p className="font-display text-3xl font-bold text-primary">{mockPlayerData.stats.assists}</p>
-            <p className="text-sm text-muted-foreground">Assists</p>
-          </div>
-          <div className="stat-card text-center">
-            <p className="font-display text-3xl font-bold text-primary">{mockPlayerData.stats.matches}</p>
-            <p className="text-sm text-muted-foreground">Matches</p>
+        {/* Bio Section */}
+        <div className="card-float p-6">
+          <h2 className="font-display text-lg font-semibold mb-3">About</h2>
+          <p className="text-muted-foreground leading-relaxed">{mockPlayerData.bio}</p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-border/50">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Height</p>
+              <p className="font-semibold">{mockPlayerData.height}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Weight</p>
+              <p className="font-semibold">{mockPlayerData.weight}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Preferred Foot</p>
+              <p className="font-semibold">{mockPlayerData.preferredFoot}</p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Position</p>
+              <p className="font-semibold">{mockPlayerData.position}</p>
+            </div>
           </div>
         </div>
 
         {/* Coach Endorsement */}
-        <div className="card-float p-6 border-success/20 bg-success/5">
-          <div className="flex items-center gap-2 mb-4">
-            <Star className="w-5 h-5 text-success" />
-            <h2 className="font-display text-lg font-semibold">Coach Endorsement</h2>
-          </div>
-          <blockquote className="text-muted-foreground italic mb-4">
-            "{mockPlayerData.coachEndorsement.quote}"
-          </blockquote>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center text-success font-semibold text-sm">
-              {mockPlayerData.coachEndorsement.coach.split(' ').map(n => n[0]).join('')}
+        <div className="espn-card rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-amber-500 to-yellow-400" />
+          <div className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="w-5 h-5 text-amber-400" />
+              <h2 className="font-display text-lg font-bold text-white">Coach Endorsement</h2>
             </div>
-            <div>
-              <p className="font-medium">{mockPlayerData.coachEndorsement.coach}</p>
-              <p className="text-sm text-muted-foreground">{mockPlayerData.coachEndorsement.academy}</p>
+            <blockquote className="text-white/70 italic text-lg mb-4 border-l-4 border-amber-500 pl-4">
+              "{mockPlayerData.coachEndorsement.quote}"
+            </blockquote>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold">
+                {mockPlayerData.coachEndorsement.coach.split(' ').map(n => n[0]).join('')}
+              </div>
+              <div>
+                <p className="font-semibold text-white">{mockPlayerData.coachEndorsement.coach}</p>
+                <p className="text-sm text-white/50">{mockPlayerData.coachEndorsement.academy}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -155,7 +223,7 @@ const PlayerProfile = () => {
             </div>
             <Button 
               size="lg" 
-              className="rounded-xl w-full md:w-auto"
+              className="rounded-xl w-full md:w-auto bg-red-500 hover:bg-red-600 text-white"
               onClick={() => setShowRequestModal(true)}
             >
               Request Contact
@@ -200,7 +268,7 @@ const PlayerProfile = () => {
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowRequestModal(false)}>
                 Cancel
               </Button>
-              <Button className="flex-1 rounded-xl" onClick={() => setShowRequestModal(false)}>
+              <Button className="flex-1 rounded-xl bg-red-500 hover:bg-red-600" onClick={() => setShowRequestModal(false)}>
                 Send Request
               </Button>
             </div>
@@ -210,15 +278,5 @@ const PlayerProfile = () => {
     </AgentLayout>
   );
 };
-
-const InfoItem = ({ icon, label, value }: { icon?: React.ReactNode; label: string; value: string }) => (
-  <div>
-    <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
-      {icon}
-      {label}
-    </p>
-    <p className="font-medium">{value}</p>
-  </div>
-);
 
 export default PlayerProfile;
