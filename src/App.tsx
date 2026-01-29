@@ -7,8 +7,10 @@ import Landing from "./pages/Landing";
 import AgentDashboard from "./pages/agent/AgentDashboard";
 import BrowsePlayers from "./pages/agent/BrowsePlayers";
 import PlayerProfile from "./pages/agent/PlayerProfile";
+import Shortlist from "./pages/agent/Shortlist";
 import PlayerDashboard from "./pages/player/PlayerDashboard";
 import AgentRequests from "./pages/player/AgentRequests";
+import MyProfile from "./pages/player/MyProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,9 +27,11 @@ const App = () => (
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
           <Route path="/agent/browse" element={<BrowsePlayers />} />
           <Route path="/agent/player/:id" element={<PlayerProfile />} />
+          <Route path="/agent/shortlist" element={<Shortlist />} />
           {/* Player Routes */}
           <Route path="/player/dashboard" element={<PlayerDashboard />} />
           <Route path="/player/requests" element={<AgentRequests />} />
+          <Route path="/player/profile" element={<MyProfile />} />
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
