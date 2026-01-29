@@ -1,15 +1,15 @@
 import AgentLayout from "@/components/layouts/AgentLayout";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, TrendingUp, Users, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Card } from "@/components/ui/card";
+import ESPNPlayerCard from "@/components/player/ESPNPlayerCard";
 
 const mockPlayers = [
-  { id: 1, name: "James Parker", position: "Striker", age: 23, image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&h=250&fit=crop&crop=face" },
-  { id: 2, name: "Luis Gomez", position: "Midfielder", age: 21, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=250&fit=crop&crop=face" },
-  { id: 3, name: "Daniel Martins", position: "Defender", age: 25, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=250&fit=crop&crop=face" },
-  { id: 4, name: "Eric Johnson", position: "Winger", age: 20, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=250&fit=crop&crop=face" },
-  { id: 5, name: "Marco Rossi", position: "Striker", age: 22, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=250&fit=crop&crop=face" },
-  { id: 6, name: "Alex Tanaka", position: "Midfielder", age: 19, image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=250&fit=crop&crop=face" },
+  { id: 1, name: "James Parker", position: "Striker", age: 23, country: "England", verified: true, endorsed: true, image: null, stats: { goals: 18, assists: 7, matches: 28 } },
+  { id: 2, name: "Luis Gomez", position: "Midfielder", age: 21, country: "Spain", verified: true, endorsed: false, image: null, stats: { goals: 5, assists: 12, matches: 25 } },
+  { id: 3, name: "Daniel Martins", position: "Defender", age: 25, country: "Brazil", verified: true, endorsed: true, image: null, stats: { goals: 2, assists: 4, matches: 30 } },
+  { id: 4, name: "Eric Johnson", position: "Winger", age: 20, country: "USA", verified: true, endorsed: false, image: null, stats: { goals: 11, assists: 9, matches: 24 } },
+  { id: 5, name: "Marco Rossi", position: "Striker", age: 22, country: "Italy", verified: true, endorsed: true, image: null, stats: { goals: 15, assists: 5, matches: 26 } },
+  { id: 6, name: "Alex Tanaka", position: "Midfielder", age: 19, country: "Japan", verified: true, endorsed: true, image: null, stats: { goals: 7, assists: 14, matches: 22 } },
 ];
 
 const AgentDashboard = () => {
@@ -22,42 +22,69 @@ const AgentDashboard = () => {
           <span className="text-sm font-medium text-amber-800">Account Pending Verification</span>
         </div>
 
-        {/* Stats Grid */}
+        {/* ESPN-Style Stats Grid */}
         <div className="grid grid-cols-3 gap-4">
-          <Card className="p-5 bg-background border-border/50">
-            <p className="text-sm text-muted-foreground mb-1">Total Players</p>
-            <p className="font-display text-3xl font-bold text-foreground">12,450</p>
-          </Card>
-          <Card className="p-5 bg-background border-border/50">
-            <p className="text-sm text-muted-foreground mb-1">New Today</p>
-            <p className="font-display text-3xl font-bold text-foreground">36</p>
-          </Card>
-          <Card className="p-5 bg-background border-border/50">
-            <p className="text-sm text-muted-foreground mb-1">Shortlisted</p>
-            <p className="font-display text-3xl font-bold text-foreground">18</p>
-          </Card>
+          <div className="espn-card rounded-xl overflow-hidden">
+            <div className="h-1 espn-hero-accent" />
+            <div className="p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-sm text-white/60 uppercase tracking-wider">Total Players</p>
+              </div>
+              <p className="font-display text-4xl font-black text-white">12,450</p>
+              <p className="text-xs text-green-400 mt-1 flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" /> +234 this week
+              </p>
+            </div>
+          </div>
+          <div className="espn-card rounded-xl overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-green-500 to-emerald-400" />
+            <div className="p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-sm text-white/60 uppercase tracking-wider">New Today</p>
+              </div>
+              <p className="font-display text-4xl font-black text-white">36</p>
+              <p className="text-xs text-green-400 mt-1">Fresh talent available</p>
+            </div>
+          </div>
+          <Link to="/agent/shortlist">
+            <div className="espn-card rounded-xl overflow-hidden hover:scale-[1.02] transition-transform cursor-pointer">
+              <div className="h-1 bg-gradient-to-r from-amber-500 to-yellow-400" />
+              <div className="p-5">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                    <Bookmark className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-sm text-white/60 uppercase tracking-wider">Shortlisted</p>
+                </div>
+                <p className="font-display text-4xl font-black text-white">18</p>
+                <p className="text-xs text-amber-400 mt-1">View your picks →</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
-        {/* Players Grid */}
-        <div className="grid grid-cols-3 gap-4">
+        {/* Section Header */}
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold">Featured Players</h2>
+          <Link to="/agent/browse" className="text-sm text-primary font-medium hover:underline">
+            View All →
+          </Link>
+        </div>
+
+        {/* ESPN-Style Players Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mockPlayers.map((player) => (
-            <Link key={player.id} to={`/agent/player/${player.id}`}>
-              <Card className="p-4 bg-background border-border/50 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <div className="w-28 h-36 rounded-lg overflow-hidden bg-muted flex-shrink-0 border-2 border-primary/20">
-                    <img 
-                      src={player.image} 
-                      alt={player.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-semibold text-foreground">{player.name}</h3>
-                    <p className="text-sm text-muted-foreground">{player.position} | Age {player.age}</p>
-                  </div>
-                </div>
-              </Card>
-            </Link>
+            <ESPNPlayerCard 
+              key={player.id} 
+              player={player} 
+              linkTo={`/agent/player/${player.id}`}
+            />
           ))}
         </div>
       </div>
