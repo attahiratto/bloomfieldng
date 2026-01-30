@@ -9,9 +9,9 @@ interface PlayerLayoutProps {
 
 const navItems = [
   { label: "Dashboard", icon: Home, path: "/player/dashboard" },
-  { label: "My Profile", icon: User, path: "/player/dashboard" },
+  { label: "My Profile", icon: User, path: "/player/profile" },
   { label: "Agent Requests", icon: Inbox, path: "/player/requests" },
-  { label: "Settings", icon: Settings, path: "/player/dashboard" },
+  { label: "Settings", icon: Settings, path: "/player/settings" },
 ];
 
 const PlayerLayout = ({ children }: PlayerLayoutProps) => {
