@@ -79,8 +79,10 @@ export default {
       },
       boxShadow: {
         'float': '0 25px 50px -12px hsl(217 91% 60% / 0.15)',
-        'card': '0 10px 15px -3px hsl(222 47% 11% / 0.06), 0 4px 6px -4px hsl(222 47% 11% / 0.06)',
-        'card-hover': '0 20px 25px -5px hsl(222 47% 11% / 0.08), 0 8px 10px -6px hsl(222 47% 11% / 0.08)',
+        'card': '0 10px 15px -3px hsl(222 47% 3% / 0.5), 0 4px 6px -4px hsl(222 47% 3% / 0.5)',
+        'card-hover': '0 20px 25px -5px hsl(222 47% 3% / 0.6), 0 8px 10px -6px hsl(222 47% 3% / 0.6)',
+        'glow': '0 0 40px hsl(217 91% 60% / 0.15)',
+        'glow-lg': '0 0 80px hsl(217 91% 60% / 0.2)',
       },
       keyframes: {
         "accordion-down": {
