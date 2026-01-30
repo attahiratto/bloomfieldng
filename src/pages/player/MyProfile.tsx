@@ -1,5 +1,5 @@
 import PlayerLayout from "@/components/layouts/PlayerLayout";
-import { BadgeCheck, Star, Play, Edit, Trophy, Target, Users, Timer, TrendingUp, Footprints, Camera } from "lucide-react";
+import { BadgeCheck, Star, Play, Edit, Trophy, Target, Users, Timer, TrendingUp, Footprints, Camera, MapPin, Calendar, Ruler, Weight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ESPNStatBlock from "@/components/player/ESPNStatBlock";
 
@@ -15,6 +15,10 @@ const myProfileData = {
   verified: true,
   endorsed: true,
   availability: "Open to Trials",
+  email: "adeola.okonkwo@email.com",
+  phone: "+234 801 234 5678",
+  dateOfBirth: "March 15, 2004",
+  nationality: "Nigerian",
   coachEndorsement: {
     coach: "Coach Sunday Oliseh",
     academy: "Lagos Football Academy",
@@ -34,6 +38,10 @@ const myProfileData = {
     rating: 8.2,
   },
   bio: "Dynamic forward with explosive pace and clinical finishing. Product of Lagos Football Academy with experience in national youth teams. Seeking opportunities to develop at a professional club in Europe.",
+  careerHistory: [
+    { team: "Lagos Football Academy", period: "2020 - Present", role: "Youth Team Forward" },
+    { team: "Nigeria U-20", period: "2023 - Present", role: "National Youth Team" },
+  ]
 };
 
 const MyProfile = () => {
@@ -87,11 +95,20 @@ const MyProfile = () => {
                       {myProfileData.name}
                     </h1>
                     <div className="flex items-center gap-4 text-white/60 text-sm">
-                      <span>{myProfileData.city}, {myProfileData.country}</span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5" />
+                        {myProfileData.city}, {myProfileData.country}
+                      </span>
                       <span>•</span>
-                      <span>{myProfileData.age} Years Old</span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {myProfileData.age} Years Old
+                      </span>
                       <span>•</span>
-                      <span>{myProfileData.height}</span>
+                      <span className="flex items-center gap-1">
+                        <Ruler className="w-3.5 h-3.5" />
+                        {myProfileData.height}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -135,6 +152,57 @@ const MyProfile = () => {
           </div>
         </div>
 
+        {/* Personal Information Section */}
+        <div className="espn-card rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-primary to-blue-400" />
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-xl font-bold text-white flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                Personal Information
+              </h2>
+              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
+                <Edit className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Full Name</p>
+                <p className="font-semibold text-white">{myProfileData.name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Date of Birth</p>
+                <p className="font-semibold text-white">{myProfileData.dateOfBirth}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Nationality</p>
+                <p className="font-semibold text-white">{myProfileData.nationality}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Location</p>
+                <p className="font-semibold text-white">{myProfileData.city}, {myProfileData.country}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Height</p>
+                <p className="font-semibold text-white">{myProfileData.height}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Weight</p>
+                <p className="font-semibold text-white">{myProfileData.weight}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Preferred Foot</p>
+                <p className="font-semibold text-white">{myProfileData.preferredFoot}</p>
+              </div>
+              <div>
+                <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Position</p>
+                <p className="font-semibold text-white">{myProfileData.position}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Season Statistics - ESPN Style Grid */}
         <div className="espn-card rounded-2xl overflow-hidden">
           <div className="h-1 espn-hero-accent" />
@@ -161,32 +229,44 @@ const MyProfile = () => {
         </div>
 
         {/* Bio Section */}
-        <div className="card-float p-6">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-display text-lg font-semibold">About Me</h2>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              <Edit className="w-4 h-4 mr-2" />
-              Edit
-            </Button>
+        <div className="espn-card rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-emerald-500 to-green-400" />
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-display text-xl font-bold text-white">About Me</h2>
+              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
+                <Edit className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            </div>
+            <p className="text-white/70 leading-relaxed">{myProfileData.bio}</p>
           </div>
-          <p className="text-muted-foreground leading-relaxed">{myProfileData.bio}</p>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-border/50">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Height</p>
-              <p className="font-semibold">{myProfileData.height}</p>
+        </div>
+
+        {/* Career History */}
+        <div className="espn-card rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-slate-500 to-slate-400" />
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-xl font-bold text-white">Career History</h2>
+              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
+                <Edit className="w-4 h-4 mr-2" />
+                Add
+              </Button>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Weight</p>
-              <p className="font-semibold">{myProfileData.weight}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Preferred Foot</p>
-              <p className="font-semibold">{myProfileData.preferredFoot}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Position</p>
-              <p className="font-semibold">{myProfileData.position}</p>
+            <div className="space-y-4">
+              {myProfileData.careerHistory.map((item, index) => (
+                <div key={index} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10">
+                  <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <Trophy className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-white">{item.team}</p>
+                    <p className="text-sm text-white/50">{item.role}</p>
+                  </div>
+                  <p className="text-sm text-white/40">{item.period}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -215,19 +295,27 @@ const MyProfile = () => {
         </div>
 
         {/* Highlight Video Section */}
-        <div className="card-float p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display text-lg font-semibold">Highlight Video</h2>
-            <Button variant="outline" size="sm" className="rounded-xl">
-              <Camera className="w-4 h-4 mr-2" />
-              Upload Video
-            </Button>
-          </div>
-          <div className="aspect-video rounded-xl bg-secondary/50 flex items-center justify-center border-2 border-dashed border-border">
-            <div className="text-center">
-              <Play className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground font-medium">No highlight video uploaded yet</p>
-              <p className="text-sm text-muted-foreground/70">Upload a video to showcase your skills to agents</p>
+        <div className="espn-card rounded-2xl overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-red-500 to-orange-400" />
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-xl font-bold text-white flex items-center gap-2">
+                <Play className="w-5 h-5 text-red-400" />
+                Highlight Video
+              </h2>
+              <Button variant="outline" size="sm" className="rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20">
+                <Camera className="w-4 h-4 mr-2" />
+                Upload Video
+              </Button>
+            </div>
+            <div className="aspect-video rounded-xl bg-white/5 flex items-center justify-center border-2 border-dashed border-white/20">
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-3">
+                  <Play className="w-8 h-8 text-red-400" />
+                </div>
+                <p className="text-white/70 font-medium">No highlight video uploaded yet</p>
+                <p className="text-sm text-white/40">Upload a video to showcase your skills to agents</p>
+              </div>
             </div>
           </div>
         </div>
