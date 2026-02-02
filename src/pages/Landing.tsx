@@ -15,11 +15,11 @@ const Landing = () => {
             <span className="font-display font-bold text-xl text-foreground">Openfield</span>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/player/dashboard">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Player Login</Button>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Sign In</Button>
             </Link>
-            <Link to="/agent/dashboard">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Agent Login</Button>
+            <Link to="/auth">
+              <Button size="sm" className="rounded-lg">Get Started</Button>
             </Link>
           </div>
         </div>
@@ -50,13 +50,13 @@ const Landing = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
-              <Link to="/player/dashboard">
+              <Link to="/auth">
                 <Button size="lg" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold btn-glow">
                   I'm a Player
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link to="/agent/dashboard">
+              <Link to="/auth">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold border-border hover:bg-secondary/50 hover:border-primary/50 transition-all">
                   I'm an Agent
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -206,12 +206,12 @@ const Landing = () => {
             Join the platform that puts trust and player safety first.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/player/dashboard">
+            <Link to="/auth">
               <Button size="lg" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold btn-glow">
                 I'm a Player
               </Button>
             </Link>
-            <Link to="/agent/dashboard">
+            <Link to="/auth">
               <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold border-border hover:bg-secondary/50 hover:border-primary/50">
                 I'm an Agent
               </Button>
