@@ -3,7 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Landing from "./pages/Landing";
+import Auth from "./pages/Auth";
 import AgentDashboard from "./pages/agent/AgentDashboard";
 import BrowsePlayers from "./pages/agent/BrowsePlayers";
 import PlayerProfile from "./pages/agent/PlayerProfile";
@@ -21,20 +23,23 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          {/* Agent Routes */}
-          <Route path="/agent/dashboard" element={<AgentDashboard />} />
-          <Route path="/agent/browse" element={<BrowsePlayers />} />
-          <Route path="/agent/player/:id" element={<PlayerProfile />} />
-          <Route path="/agent/shortlist" element={<Shortlist />} />
-          {/* Player Routes */}
-          <Route path="/player/dashboard" element={<PlayerDashboard />} />
-          <Route path="/player/requests" element={<AgentRequests />} />
-          <Route path="/player/profile" element={<MyProfile />} />
-          {/* Catch-all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
+            {/* Agent Routes */}
+            <Route path="/agent/dashboard" element={<AgentDashboard />} />
+            <Route path="/agent/browse" element={<BrowsePlayers />} />
+            <Route path="/agent/player/:id" element={<PlayerProfile />} />
+            <Route path="/agent/shortlist" element={<Shortlist />} />
+            {/* Player Routes */}
+            <Route path="/player/dashboard" element={<PlayerDashboard />} />
+            <Route path="/player/requests" element={<AgentRequests />} />
+            <Route path="/player/profile" element={<MyProfile />} />
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
