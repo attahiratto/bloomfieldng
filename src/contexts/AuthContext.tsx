@@ -73,41 +73,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUp = async (email: string, password: string, userRole: AppRole, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { data, error } = await supabase.auth.signUp({
+    // Pass metadata to signup - trigger will create profile and role
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
+          role: userRole,
+        },
       },
     });
 
-    if (error) {
-      return { error };
-    }
-
-    if (data.user) {
-      // Insert role
-      const { error: roleError } = await supabase.from("user_roles").insert({
-        user_id: data.user.id,
-        role: userRole,
-      });
-
-      if (roleError) {
-        return { error: roleError };
-      }
-
-      // Insert profile
-      const { error: profileError } = await supabase.from("profiles").insert({
-        user_id: data.user.id,
-        full_name: fullName,
-      });
-
-      if (profileError) {
-        return { error: profileError };
-      }
-    }
-
-    return { error: null };
+    return { error };
   };
 
   const signIn = async (email: string, password: string) => {
