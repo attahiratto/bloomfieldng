@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, CheckSquare, BadgeCheck, ChevronDown } from "lucide-react";
+import { Home, Search, CheckSquare, BadgeCheck, ChevronDown, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AgentLayoutProps {
   children: React.ReactNode;
@@ -10,12 +12,17 @@ interface AgentLayoutProps {
 const navItems = [
   { label: "Dashboard", icon: Home, path: "/agent/dashboard" },
   { label: "Discovery", icon: Search, path: "/agent/browse" },
-  { label: "Shortlist", icon: CheckSquare, path: "/agent/dashboard" },
+  { label: "Shortlist", icon: CheckSquare, path: "/agent/shortlist" },
   { label: "Get Verified", icon: BadgeCheck, path: "/agent/dashboard", hasCheck: true },
 ];
 
 const AgentLayout = ({ children }: AgentLayoutProps) => {
   const location = useLocation();
+  const { data: profile } = useProfile();
+  const { signOut } = useAuth();
+
+  const displayName = profile?.full_name || "Agent";
+  const initials = displayName.split(" ").map(n => n[0]).join("").toUpperCase();
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
@@ -54,13 +61,20 @@ const AgentLayout = ({ children }: AgentLayoutProps) => {
           ))}
         </nav>
 
-        {/* Bottom CTA */}
-        <div className="p-4">
+        {/* Bottom */}
+        <div className="p-4 space-y-2">
           <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-700/50 text-white text-sm font-medium hover:bg-slate-700 transition-colors">
             <div className="w-5 h-5 rounded bg-emerald-500 flex items-center justify-center">
               <BadgeCheck className="w-3.5 h-3.5 text-white" />
             </div>
             Get Verified
+          </button>
+          <button
+            onClick={signOut}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 text-sm font-medium hover:bg-slate-700/30 hover:text-white transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            Sign Out
           </button>
         </div>
       </aside>
@@ -82,15 +96,17 @@ const AgentLayout = ({ children }: AgentLayoutProps) => {
 
           {/* User Menu */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" 
-                alt="User" 
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {profile?.avatar_url ? (
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-sm">
+                {initials}
+              </div>
+            )}
             <button className="flex items-center gap-1 text-sm font-medium text-foreground">
-              John Doe
+              {displayName}
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>

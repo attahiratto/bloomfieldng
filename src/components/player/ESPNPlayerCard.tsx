@@ -2,14 +2,14 @@ import { BadgeCheck, Star, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Player {
-  id: number;
+  id: string | number;
   name: string;
-  age: number;
+  age?: number | null;
   position: string;
   country: string;
   verified: boolean;
   endorsed: boolean;
-  image: string | null;
+  image?: string | null;
   stats?: {
     goals?: number;
     assists?: number;
@@ -36,11 +36,15 @@ const ESPNPlayerCard = ({ player, linkTo }: ESPNPlayerCardProps) => {
         <div className="flex items-start gap-4 mb-4">
           {/* Player Avatar */}
           <div className="relative">
-            <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-red-500/30 to-orange-500/20 flex items-center justify-center border-2 border-white/10">
-              <span className="font-display font-bold text-3xl text-white">
-                {initials}
-              </span>
-            </div>
+            {player.image ? (
+              <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-white/10">
+                <img src={player.image} alt={player.name} className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-red-500/30 to-orange-500/20 flex items-center justify-center border-2 border-white/10">
+                <span className="font-display font-bold text-3xl text-white">{initials}</span>
+              </div>
+            )}
             {player.verified && (
               <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center border-2 border-slate-900">
                 <BadgeCheck className="w-3.5 h-3.5 text-white" />
@@ -53,12 +57,10 @@ const ESPNPlayerCard = ({ player, linkTo }: ESPNPlayerCardProps) => {
             <h3 className="font-display font-bold text-lg text-white truncate group-hover:text-red-400 transition-colors">
               {player.name}
             </h3>
-            <p className="text-red-400 font-bold text-sm uppercase tracking-wider">
-              {player.position}
-            </p>
+            <p className="text-red-400 font-bold text-sm uppercase tracking-wider">{player.position}</p>
             <div className="flex items-center gap-2 mt-1 text-white/50 text-sm">
-              <span>{player.age} YRS</span>
-              <span>•</span>
+              {player.age && <span>{player.age} YRS</span>}
+              {player.age && <span>•</span>}
               <span className="uppercase">{player.country}</span>
             </div>
           </div>
@@ -86,14 +88,12 @@ const ESPNPlayerCard = ({ player, linkTo }: ESPNPlayerCardProps) => {
         <div className="flex items-center gap-2 flex-wrap">
           {player.verified && (
             <span className="pill-espn">
-              <BadgeCheck className="w-3 h-3" />
-              Verified
+              <BadgeCheck className="w-3 h-3" /> Verified
             </span>
           )}
           {player.endorsed && (
             <span className="pill-espn-gold">
-              <Star className="w-3 h-3" />
-              Coach Pick
+              <Star className="w-3 h-3" /> Coach Pick
             </span>
           )}
         </div>

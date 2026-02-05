@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, User, Inbox, Settings, BadgeCheck, ChevronDown, Search } from "lucide-react";
+import { Home, User, Inbox, Settings, BadgeCheck, ChevronDown, Search, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { useProfile } from "@/hooks/useProfile";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PlayerLayoutProps {
   children: React.ReactNode;
@@ -16,6 +18,11 @@ const navItems = [
 
 const PlayerLayout = ({ children }: PlayerLayoutProps) => {
   const location = useLocation();
+  const { data: profile } = useProfile();
+  const { signOut } = useAuth();
+
+  const displayName = profile?.full_name || "Player";
+  const initials = displayName.split(" ").map(n => n[0]).join("").toUpperCase();
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
@@ -49,13 +56,20 @@ const PlayerLayout = ({ children }: PlayerLayoutProps) => {
         </nav>
 
         {/* Bottom Status */}
-        <div className="p-4">
+        <div className="p-4 space-y-2">
           <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-emerald-600/20 text-emerald-400 text-sm font-medium">
             <div className="w-5 h-5 rounded bg-emerald-500 flex items-center justify-center">
               <BadgeCheck className="w-3.5 h-3.5 text-white" />
             </div>
             Profile Verified
           </div>
+          <button
+            onClick={signOut}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 text-sm font-medium hover:bg-slate-700/30 hover:text-white transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            Sign Out
+          </button>
         </div>
       </aside>
 
@@ -76,15 +90,17 @@ const PlayerLayout = ({ children }: PlayerLayoutProps) => {
 
           {/* User Menu */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop&crop=face" 
-                alt="User" 
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {profile?.avatar_url ? (
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <img src={profile.avatar_url} alt={displayName} className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-sm">
+                {initials}
+              </div>
+            )}
             <button className="flex items-center gap-1 text-sm font-medium text-foreground">
-              Adeola
+              {displayName}
               <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </button>
           </div>
