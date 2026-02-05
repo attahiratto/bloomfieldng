@@ -14,36 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      profiles: {
+      agent_requests: {
         Row: {
-          avatar_url: string | null
-          bio: string | null
-          country: string | null
+          agent_id: string
           created_at: string
-          full_name: string | null
           id: string
+          message: string | null
+          player_id: string
+          request_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          player_id: string
+          request_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          player_id?: string
+          request_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      career_history: {
+        Row: {
+          created_at: string
+          id: string
+          period: string | null
+          role: string | null
+          team: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period?: string | null
+          role?: string | null
+          team: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period?: string | null
+          role?: string | null
+          team?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coach_endorsements: {
+        Row: {
+          academy: string | null
+          coach_name: string
+          created_at: string
+          id: string
+          player_id: string
+          quote: string | null
+        }
+        Insert: {
+          academy?: string | null
+          coach_name: string
+          created_at?: string
+          id?: string
+          player_id: string
+          quote?: string | null
+        }
+        Update: {
+          academy?: string | null
+          coach_name?: string
+          created_at?: string
+          id?: string
+          player_id?: string
+          quote?: string | null
+        }
+        Relationships: []
+      }
+      player_stats: {
+        Row: {
+          assists: number
+          created_at: string
+          goals: number
+          id: string
+          matches: number
+          minutes_played: number
+          pass_accuracy: number
+          season: string
+          shots_on_target: number
           updated_at: string
           user_id: string
         }
         Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          country?: string | null
+          assists?: number
           created_at?: string
-          full_name?: string | null
+          goals?: number
           id?: string
+          matches?: number
+          minutes_played?: number
+          pass_accuracy?: number
+          season?: string
+          shots_on_target?: number
           updated_at?: string
           user_id: string
         }
         Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          country?: string | null
+          assists?: number
           created_at?: string
-          full_name?: string | null
+          goals?: number
           id?: string
+          matches?: number
+          minutes_played?: number
+          pass_accuracy?: number
+          season?: string
+          shots_on_target?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          availability: string | null
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          date_of_birth: string | null
+          full_name: string | null
+          height: string | null
+          id: string
+          position: string | null
+          preferred_foot: string | null
+          updated_at: string
+          user_id: string
+          weight: string | null
+        }
+        Insert: {
+          availability?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string | null
+          height?: string | null
+          id?: string
+          position?: string | null
+          preferred_foot?: string | null
+          updated_at?: string
+          user_id: string
+          weight?: string | null
+        }
+        Update: {
+          availability?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string | null
+          height?: string | null
+          id?: string
+          position?: string | null
+          preferred_foot?: string | null
+          updated_at?: string
+          user_id?: string
+          weight?: string | null
         }
         Relationships: []
       }
