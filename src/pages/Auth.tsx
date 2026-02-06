@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { User, Briefcase, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { z } from "zod";
+import PlayerSignupFields from "@/components/auth/PlayerSignupFields";
+import AgentSignupFields from "@/components/auth/AgentSignupFields";
 
 const emailSchema = z.string().trim().email({ message: "Invalid email address" }).max(255);
 const passwordSchema = z.string().min(6, { message: "Password must be at least 6 characters" }).max(72);
@@ -24,6 +26,19 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Player-specific fields
+  const [position, setPosition] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [preferredFoot, setPreferredFoot] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [playerCountry, setPlayerCountry] = useState("");
+
+  // Agent-specific fields
+  const [agentCountry, setAgentCountry] = useState("");
+  const [agentCity, setAgentCity] = useState("");
+  const [agentBio, setAgentBio] = useState("");
 
   const { signIn, signUp, user, role: userRole } = useAuth();
   const navigate = useNavigate();
@@ -56,10 +71,44 @@ const Auth = () => {
       if (!role) {
         newErrors.role = "Please select a role";
       }
+
+      if (role === "player") {
+        if (!position) newErrors.position = "Please select a position";
+        if (!dateOfBirth) newErrors.dateOfBirth = "Please enter your date of birth";
+        if (height && (isNaN(Number(height)) || Number(height) < 100 || Number(height) > 250)) {
+          newErrors.height = "Enter a valid height (100-250 cm)";
+        }
+        if (weight && (isNaN(Number(weight)) || Number(weight) < 30 || Number(weight) > 200)) {
+          newErrors.weight = "Enter a valid weight (30-200 kg)";
+        }
+      }
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const buildProfileData = (): Record<string, string> => {
+    if (role === "player") {
+      const data: Record<string, string> = {};
+      if (position) data.position = position;
+      if (height) data.height = `${height}cm`;
+      if (weight) data.weight = `${weight}kg`;
+      if (preferredFoot) data.preferred_foot = preferredFoot;
+      if (dateOfBirth) data.date_of_birth = dateOfBirth;
+      if (playerCountry) data.country = playerCountry;
+      return data;
+    }
+
+    if (role === "agent") {
+      const data: Record<string, string> = {};
+      if (agentCountry) data.country = agentCountry;
+      if (agentCity) data.city = agentCity;
+      if (agentBio) data.bio = agentBio;
+      return data;
+    }
+
+    return {};
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -81,7 +130,8 @@ const Auth = () => {
           }
         }
       } else {
-        const { error } = await signUp(email, password, role!, fullName);
+        const profileData = buildProfileData();
+        const { error } = await signUp(email, password, role!, fullName, profileData);
         if (error) {
           if (error.message.includes("already registered")) {
             toast({ title: "Account exists", description: "This email is already registered. Try logging in.", variant: "destructive" });
@@ -101,7 +151,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left Side - Form */}
-      <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 xl:px-24">
+      <div className="flex-1 flex flex-col justify-center px-8 lg:px-16 xl:px-24 overflow-y-auto py-8">
         <div className="max-w-md w-full mx-auto">
           <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" />
@@ -169,6 +219,37 @@ const Auth = () => {
                 />
                 {errors.fullName && <p className="text-destructive text-sm mt-1">{errors.fullName}</p>}
               </div>
+            )}
+
+            {/* Role-specific fields */}
+            {mode === "signup" && role === "player" && (
+              <PlayerSignupFields
+                position={position}
+                setPosition={setPosition}
+                height={height}
+                setHeight={setHeight}
+                weight={weight}
+                setWeight={setWeight}
+                preferredFoot={preferredFoot}
+                setPreferredFoot={setPreferredFoot}
+                dateOfBirth={dateOfBirth}
+                setDateOfBirth={setDateOfBirth}
+                country={playerCountry}
+                setCountry={setPlayerCountry}
+                errors={errors}
+              />
+            )}
+
+            {mode === "signup" && role === "agent" && (
+              <AgentSignupFields
+                country={agentCountry}
+                setCountry={setAgentCountry}
+                city={agentCity}
+                setCity={setAgentCity}
+                bio={agentBio}
+                setBio={setAgentBio}
+                errors={errors}
+              />
             )}
 
             <div>
