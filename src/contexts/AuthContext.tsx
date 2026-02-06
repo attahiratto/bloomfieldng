@@ -10,7 +10,7 @@ interface AuthContextType {
   session: Session | null;
   role: AppRole | null;
   loading: boolean;
-  signUp: (email: string, password: string, role: AppRole, fullName: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, role: AppRole, fullName: string, profileData?: Record<string, string>) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, userRole: AppRole, fullName: string) => {
+  const signUp = async (email: string, password: string, userRole: AppRole, fullName: string, profileData?: Record<string, string>) => {
     const redirectUrl = `${window.location.origin}/`;
     
     // Pass metadata to signup - trigger will create profile and role
@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: {
           full_name: fullName,
           role: userRole,
+          ...profileData,
         },
       },
     });
