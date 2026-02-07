@@ -18,7 +18,7 @@ const Landing = () => {
             <Link to="/auth">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">Sign In</Button>
             </Link>
-            <Link to="/auth">
+            <Link to="/auth?mode=signup">
               <Button size="sm" className="rounded-lg">Get Started</Button>
             </Link>
           </div>
