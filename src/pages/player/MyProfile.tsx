@@ -164,13 +164,10 @@ const MyProfile = () => {
         <div className="espn-card rounded-2xl overflow-hidden">
           <div className="h-1 espn-hero-accent" />
           <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4">
               <h2 className="font-display text-xl font-bold text-white flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-destructive" /> Season Stats
               </h2>
-              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
-                <Edit className="w-4 h-4 mr-2" /> Update Stats
-              </Button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               <ESPNStatBlock value={stats?.goals ?? 0} label="Goals" icon={Target} trend="up" size="md" />
@@ -201,11 +198,8 @@ const MyProfile = () => {
         <div className="espn-card rounded-2xl overflow-hidden">
           <div className="h-1 bg-gradient-to-r from-muted to-muted-foreground" />
           <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4">
               <h2 className="font-display text-xl font-bold text-white">Career History</h2>
-              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
-                <Edit className="w-4 h-4 mr-2" /> Add
-              </Button>
             </div>
             <div className="space-y-4">
               {careerHistory && careerHistory.length > 0 ? (
