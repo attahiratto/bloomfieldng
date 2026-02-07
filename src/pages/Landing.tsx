@@ -50,13 +50,13 @@ const Landing = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
-              <Link to="/auth">
+              <Link to="/auth?mode=signup">
                 <Button size="lg" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold btn-glow">
                   I'm a Player
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link to="/auth">
+              <Link to="/auth?mode=signup">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold border-border hover:bg-secondary/50 hover:border-primary/50 transition-all">
                   I'm an Agent
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -206,12 +206,12 @@ const Landing = () => {
             Join the platform that puts trust and player safety first.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/auth">
+            <Link to="/auth?mode=signup">
               <Button size="lg" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold btn-glow">
                 I'm a Player
               </Button>
             </Link>
-            <Link to="/auth">
+            <Link to="/auth?mode=signup">
               <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-xl h-14 px-8 text-base font-semibold border-border hover:bg-secondary/50 hover:border-primary/50">
                 I'm an Agent
               </Button>
