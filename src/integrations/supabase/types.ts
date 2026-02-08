@@ -159,6 +159,7 @@ export type Database = {
           preferred_foot: string | null
           updated_at: string
           user_id: string
+          video_url: string | null
           weight: string | null
         }
         Insert: {
@@ -176,6 +177,7 @@ export type Database = {
           preferred_foot?: string | null
           updated_at?: string
           user_id: string
+          video_url?: string | null
           weight?: string | null
         }
         Update: {
@@ -193,6 +195,7 @@ export type Database = {
           preferred_foot?: string | null
           updated_at?: string
           user_id?: string
+          video_url?: string | null
           weight?: string | null
         }
         Relationships: []
