@@ -13,6 +13,7 @@ import Shortlist from "./pages/agent/Shortlist";
 import PlayerDashboard from "./pages/player/PlayerDashboard";
 import AgentRequests from "./pages/player/AgentRequests";
 import MyProfile from "./pages/player/MyProfile";
+import PlayerSettings from "./pages/player/PlayerSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/player/dashboard" element={<PlayerDashboard />} />
             <Route path="/player/requests" element={<AgentRequests />} />
             <Route path="/player/profile" element={<MyProfile />} />
+            <Route path="/player/settings" element={<PlayerSettings />} />
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>

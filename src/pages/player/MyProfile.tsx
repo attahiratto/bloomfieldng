@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import ESPNStatBlock from "@/components/player/ESPNStatBlock";
 import { useProfile } from "@/hooks/useProfile";
 import { useMyStats, useMyCareerHistory, useMyEndorsements } from "@/hooks/usePlayerData";
+import { useNavigate } from "react-router-dom";
 
 const MyProfile = () => {
+  const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: stats, isLoading: statsLoading } = useMyStats();
   const { data: careerHistory, isLoading: careerLoading } = useMyCareerHistory();
@@ -48,6 +50,7 @@ const MyProfile = () => {
             variant="outline" 
             size="sm" 
             className="absolute top-6 right-6 rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 z-10"
+            onClick={() => navigate("/player/settings")}
           >
             <Edit className="w-4 h-4 mr-2" />
             Edit Profile
@@ -135,7 +138,7 @@ const MyProfile = () => {
               <h2 className="font-display text-xl font-bold text-white flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" /> Personal Information
               </h2>
-              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
+              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white" onClick={() => navigate("/player/settings")}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </Button>
             </div>
@@ -186,7 +189,7 @@ const MyProfile = () => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-display text-xl font-bold text-white">About Me</h2>
-              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
+              <Button variant="ghost" size="sm" className="text-white/50 hover:text-white" onClick={() => navigate("/player/settings")}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </Button>
             </div>
