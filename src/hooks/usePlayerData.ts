@@ -177,6 +177,64 @@ export const useAllPlayers = () => {
   });
 };
 
+// Fetch current player's YouTube videos
+export const useMyVideos = () => {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["player-videos", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data, error } = await supabase
+        .from("player_videos")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!user?.id,
+  });
+};
+
+// Add a YouTube video
+export const useAddVideo = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ youtube_url, title }: { youtube_url: string; title?: string }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const { data, error } = await supabase
+        .from("player_videos")
+        .insert({ user_id: user.id, youtube_url, title })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["player-videos", user?.id] });
+    },
+  });
+};
+
+// Delete a YouTube video
+export const useDeleteVideo = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (videoId: string) => {
+      const { error } = await supabase
+        .from("player_videos")
+        .delete()
+        .eq("id", videoId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["player-videos", user?.id] });
+    },
+  });
+};
+
 // Fetch a single player profile by user_id
 export const usePlayerProfile = (userId: string | undefined) => {
   return useQuery({

@@ -143,6 +143,30 @@ export type Database = {
         }
         Relationships: []
       }
+      player_videos: {
+        Row: {
+          created_at: string
+          id: string
+          title: string | null
+          user_id: string
+          youtube_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id: string
+          youtube_url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id?: string
+          youtube_url?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           availability: string | null

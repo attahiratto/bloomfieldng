@@ -1,89 +1,18 @@
 import PlayerLayout from "@/components/layouts/PlayerLayout";
-import { BadgeCheck, Star, Play, Edit, Trophy, Target, Users, Timer, TrendingUp, Footprints, Camera, MapPin, Loader2, Upload, Trash2 } from "lucide-react";
+import { BadgeCheck, Star, Play, Edit, Trophy, Target, Users, Timer, TrendingUp, Footprints, Camera, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ESPNStatBlock from "@/components/player/ESPNStatBlock";
-import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import YouTubeVideoSection from "@/components/player/YouTubeVideoSection";
+import { useProfile } from "@/hooks/useProfile";
 import { useMyStats, useMyCareerHistory, useMyEndorsements } from "@/hooks/usePlayerData";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 
 const MyProfile = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const updateProfile = useUpdateProfile();
   const { data: stats, isLoading: statsLoading } = useMyStats();
   const { data: careerHistory, isLoading: careerLoading } = useMyCareerHistory();
   const { data: endorsements, isLoading: endorseLoading } = useMyEndorsements();
-  const videoInputRef = useRef<HTMLInputElement>(null);
-  const [videoUploading, setVideoUploading] = useState(false);
-
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-
-    const allowedTypes = ["video/mp4", "video/webm", "video/quicktime"];
-    if (!allowedTypes.includes(file.type)) {
-      toast({ title: "Invalid file type", description: "Please upload an MP4, WebM, or MOV video.", variant: "destructive" });
-      return;
-    }
-    if (file.size > 50 * 1024 * 1024) {
-      toast({ title: "File too large", description: "Max video size is 50MB.", variant: "destructive" });
-      return;
-    }
-
-    setVideoUploading(true);
-    try {
-      const ext = file.name.split(".").pop();
-      const filePath = `${user.id}/highlight.${ext}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("videos")
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data: urlData } = supabase.storage
-        .from("videos")
-        .getPublicUrl(filePath);
-
-      const videoUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-      await updateProfile.mutateAsync({ video_url: videoUrl } as any);
-
-      toast({ title: "Video uploaded!", description: "Your highlight video is now visible on your profile." });
-    } catch (err: any) {
-      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
-    } finally {
-      setVideoUploading(false);
-    }
-  };
-
-  const handleRemoveVideo = async () => {
-    if (!user) return;
-    setVideoUploading(true);
-    try {
-      // List and remove existing video files
-      const { data: files } = await supabase.storage
-        .from("videos")
-        .list(user.id);
-
-      if (files && files.length > 0) {
-        const filePaths = files.map(f => `${user.id}/${f.name}`);
-        await supabase.storage.from("videos").remove(filePaths);
-      }
-
-      await updateProfile.mutateAsync({ video_url: null } as any);
-      toast({ title: "Video removed", description: "Your highlight video has been deleted." });
-    } catch (err: any) {
-      toast({ title: "Remove failed", description: err.message, variant: "destructive" });
-    } finally {
-      setVideoUploading(false);
-    }
-  };
 
   const isLoading = profileLoading || statsLoading || careerLoading || endorseLoading;
 
@@ -333,73 +262,8 @@ const MyProfile = () => {
           </div>
         </div>
 
-        {/* Highlight Video */}
-        <div className="espn-card rounded-2xl overflow-hidden">
-          <div className="h-1 bg-gradient-to-r from-destructive to-orange-400" />
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-xl font-bold text-white flex items-center gap-2">
-                <Play className="w-5 h-5 text-destructive" /> Highlight Video
-              </h2>
-              <div className="flex items-center gap-2">
-                {(profile as any)?.video_url && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="rounded-xl bg-white/10 border-white/20 text-white hover:bg-destructive/20 hover:text-destructive hover:border-destructive/30"
-                    onClick={handleRemoveVideo}
-                    disabled={videoUploading}
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" /> Remove
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  onClick={() => videoInputRef.current?.click()}
-                  disabled={videoUploading}
-                >
-                  {videoUploading ? (
-                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</>
-                  ) : (
-                    <><Upload className="w-4 h-4 mr-2" /> Upload Video</>
-                  )}
-                </Button>
-              </div>
-            </div>
-            <input
-              ref={videoInputRef}
-              type="file"
-              accept="video/mp4,video/webm,video/quicktime"
-              className="hidden"
-              onChange={handleVideoUpload}
-            />
-            {(profile as any)?.video_url ? (
-              <div className="aspect-video rounded-xl overflow-hidden border border-white/10">
-                <video
-                  src={(profile as any).video_url}
-                  controls
-                  className="w-full h-full object-cover"
-                  preload="metadata"
-                />
-              </div>
-            ) : (
-              <div
-                className="aspect-video rounded-xl bg-white/5 flex items-center justify-center border-2 border-dashed border-white/20 cursor-pointer hover:bg-white/10 transition-colors"
-                onClick={() => videoInputRef.current?.click()}
-              >
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto mb-3">
-                    <Play className="w-8 h-8 text-destructive" />
-                  </div>
-                  <p className="text-white/70 font-medium">No highlight video uploaded yet</p>
-                  <p className="text-sm text-white/40">Click here or use the button above to upload</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Highlight Videos */}
+        <YouTubeVideoSection />
       </div>
     </PlayerLayout>
   );
