@@ -14,6 +14,7 @@ import PlayerDashboard from "./pages/player/PlayerDashboard";
 import AgentRequests from "./pages/player/AgentRequests";
 import MyProfile from "./pages/player/MyProfile";
 import PlayerSettings from "./pages/player/PlayerSettings";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,8 @@ const App = () => (
             <Route path="/player/requests" element={<AgentRequests />} />
             <Route path="/player/profile" element={<MyProfile />} />
             <Route path="/player/settings" element={<PlayerSettings />} />
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
