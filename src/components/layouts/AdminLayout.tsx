@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { Home, Users, Shield, LogOut } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Home, Users, BarChart3, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
@@ -10,15 +10,17 @@ interface AdminLayoutProps {
 }
 
 const navItems = [
-  { label: "Dashboard", icon: Home, path: "/admin" },
-  { label: "Users", icon: Users, path: "/admin" },
-  { label: "Roles", icon: Shield, path: "/admin" },
+  { label: "Overview", icon: Home, tab: "overview" },
+  { label: "Users", icon: Users, tab: "users" },
+  { label: "Player Stats", icon: BarChart3, tab: "stats" },
 ];
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { role, loading, user, signOut } = useAuth();
   const [justLoggedIn, setJustLoggedIn] = useState(false);
+
+  const activeTab = searchParams.get("tab") || "overview";
 
   if (loading) {
     return (
@@ -34,36 +36,36 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <aside className="fixed left-0 top-0 bottom-0 w-60 bg-slate-900 text-white flex flex-col">
+      <aside className="fixed left-0 top-0 bottom-0 w-60 bg-card border-r border-border flex flex-col">
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-display font-bold text-xl tracking-wide">BLOOMFIELD</span>
+            <span className="font-display font-bold text-xl tracking-wide text-foreground">BLOOMFIELD</span>
             <span className="text-destructive">ADMIN</span>
           </Link>
         </div>
 
         <nav className="flex-1 px-4 space-y-1">
           {navItems.map((item) => (
-            <Link
+            <button
               key={item.label}
-              to={item.path}
+              onClick={() => setSearchParams({ tab: item.tab })}
               className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                location.pathname === item.path
-                  ? "bg-slate-700/50 text-white"
-                  : "text-slate-300 hover:bg-slate-700/30 hover:text-white"
+                "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                activeTab === item.tab
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               <item.icon className="w-5 h-5" />
               {item.label}
-            </Link>
+            </button>
           ))}
         </nav>
 
         <div className="p-4">
           <button
             onClick={signOut}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 text-sm font-medium hover:bg-slate-700/30 hover:text-white transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground text-sm font-medium hover:bg-muted hover:text-foreground transition-colors"
           >
             <LogOut className="w-5 h-5" />
             Sign Out
