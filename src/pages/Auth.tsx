@@ -323,7 +323,7 @@ const Auth = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(16,185,129,0.15),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(245,158,11,0.1),transparent_50%)]" />
         <div className="relative text-center">
-          <div className="font-display text-5xl font-black text-white mb-4">OPENFIELD</div>
+          <div className="font-display text-5xl font-black text-white mb-4">BLOOMFIELD</div>
           <p className="text-xl text-white/60 max-w-md">
             The premier platform connecting African football talent with global opportunities
           </p>

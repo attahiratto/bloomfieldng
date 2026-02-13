@@ -31,7 +31,7 @@ const PlayerLayout = ({ children }: PlayerLayoutProps) => {
         {/* Logo */}
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-display font-bold text-xl tracking-wide">OPENFIELD</span>
+            <span className="font-display font-bold text-xl tracking-wide">BLOOMFIELD</span>
             <span className="text-primary">°</span>
           </Link>
         </div>
