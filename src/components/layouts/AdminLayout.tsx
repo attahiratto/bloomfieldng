@@ -37,7 +37,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <aside className="fixed left-0 top-0 bottom-0 w-60 bg-slate-900 text-white flex flex-col">
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-display font-bold text-xl tracking-wide">OPENFIELD</span>
+            <span className="font-display font-bold text-xl tracking-wide">BLOOMFIELD</span>
             <span className="text-destructive">ADMIN</span>
           </Link>
         </div>

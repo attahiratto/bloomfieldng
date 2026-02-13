@@ -12,7 +12,7 @@ const Landing = () => {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-glow">
               <Globe className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="font-display font-bold text-xl text-foreground">Openfield</span>
+            <span className="font-display font-bold text-xl text-foreground">Bloomfield</span>
           </div>
           <div className="flex items-center gap-3">
             <Link to="/auth">
@@ -135,7 +135,7 @@ const Landing = () => {
               A safe bridge to opportunity
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Openfield creates transparent, consent-based connections between verified agents and talented players.
+              Bloomfield creates transparent, consent-based connections between verified agents and talented players.
             </p>
           </div>
           
@@ -227,10 +227,10 @@ const Landing = () => {
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Globe className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-display font-semibold text-foreground">Openfield</span>
+            <span className="font-display font-semibold text-foreground">Bloomfield</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © 2025 Openfield. Building trust in football.
+            © 2025 Bloomfield. Building trust in football.
           </p>
         </div>
       </footer>

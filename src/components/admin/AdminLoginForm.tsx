@@ -60,7 +60,7 @@ const AdminLoginForm = ({ onSuccess }: AdminLoginFormProps) => {
           <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-4">
             <Shield className="w-7 h-7 text-primary" />
           </div>
-          <h1 className="font-display text-2xl font-bold text-white">OPENFIELD</h1>
+          <h1 className="font-display text-2xl font-bold text-white">BLOOMFIELD</h1>
           <p className="text-slate-400 text-sm mt-1">Admin Portal</p>
         </div>
 

@@ -218,7 +218,7 @@ const PlayerProfile = () => {
           <Shield className="w-5 h-5 text-muted-foreground mt-0.5" />
           <div>
             <p className="text-sm text-muted-foreground">
-              <strong className="text-foreground">Openfield Safety:</strong> All interactions are consent-based. 
+              <strong className="text-foreground">Bloomfield Safety:</strong> All interactions are consent-based. 
               Players approve contact requests before any communication. We never ask players for upfront fees.
             </p>
           </div>

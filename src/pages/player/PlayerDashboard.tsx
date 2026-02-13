@@ -144,7 +144,7 @@ const PlayerDashboard = () => {
         <div className="flex items-start gap-3 p-4 rounded-lg bg-secondary/50">
           <Shield className="w-5 h-5 text-muted-foreground mt-0.5" />
           <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">Your Safety Matters:</strong> Only connect with verified agents. Openfield never asks for upfront fees.
+            <strong className="text-foreground">Your Safety Matters:</strong> Only connect with verified agents. Bloomfield never asks for upfront fees.
           </p>
         </div>
       </div>
