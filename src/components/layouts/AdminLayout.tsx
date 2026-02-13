@@ -1,8 +1,9 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Home, Users, Shield, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
+import { useState } from "react";
+import AdminLoginForm from "@/components/admin/AdminLoginForm";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -17,13 +18,7 @@ const navItems = [
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const location = useLocation();
   const { role, loading, user, signOut } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loading && (!user || role !== "admin")) {
-      navigate("/");
-    }
-  }, [loading, user, role, navigate]);
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
 
   if (loading) {
     return (
@@ -33,7 +28,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     );
   }
 
-  if (role !== "admin") return null;
+  if (!user || (role !== "admin" && !justLoggedIn)) {
+    return <AdminLoginForm onSuccess={() => setJustLoggedIn(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-muted/30 flex">
