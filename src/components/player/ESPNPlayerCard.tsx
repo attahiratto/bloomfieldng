@@ -1,4 +1,4 @@
-import { BadgeCheck, Star, TrendingUp } from "lucide-react";
+import { BadgeCheck, Star, TrendingUp, Bookmark, BookmarkCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Player {
@@ -20,9 +20,12 @@ interface Player {
 interface ESPNPlayerCardProps {
   player: Player;
   linkTo?: string;
+  isShortlisted?: boolean;
+  onToggleShortlist?: (playerId: string) => void;
+  shortlistLoading?: boolean;
 }
 
-const ESPNPlayerCard = ({ player, linkTo }: ESPNPlayerCardProps) => {
+const ESPNPlayerCard = ({ player, linkTo, isShortlisted, onToggleShortlist, shortlistLoading }: ESPNPlayerCardProps) => {
   const initials = player.name.split(' ').map(n => n[0]).join('');
   
   const CardContent = () => (
@@ -112,15 +115,35 @@ const ESPNPlayerCard = ({ player, linkTo }: ESPNPlayerCardProps) => {
     </div>
   );
 
-  if (linkTo) {
-    return (
-      <Link to={linkTo}>
+  return (
+    <div className="relative">
+      {onToggleShortlist && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleShortlist(String(player.id));
+          }}
+          disabled={shortlistLoading}
+          className={`absolute top-6 right-4 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+            isShortlisted
+              ? 'bg-amber-500 text-white'
+              : 'bg-black/60 text-white/60 hover:bg-amber-500 hover:text-white'
+          }`}
+          title={isShortlisted ? "Remove from shortlist" : "Add to shortlist"}
+        >
+          {isShortlisted ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+        </button>
+      )}
+      {linkTo ? (
+        <Link to={linkTo}>
+          <CardContent />
+        </Link>
+      ) : (
         <CardContent />
-      </Link>
-    );
-  }
-
-  return <CardContent />;
+      )}
+    </div>
+  );
 };
 
 export default ESPNPlayerCard;

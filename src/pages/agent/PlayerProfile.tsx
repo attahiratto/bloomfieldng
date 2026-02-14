@@ -1,15 +1,55 @@
 import AgentLayout from "@/components/layouts/AgentLayout";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Play, BadgeCheck, Star, Shield, MessageCircle, Target, Users, Trophy, TrendingUp, Footprints, Timer, Loader2 } from "lucide-react";
+import { ArrowLeft, Play, BadgeCheck, Star, Shield, MessageCircle, Target, Users, Trophy, TrendingUp, Footprints, Timer, Loader2, Bookmark, BookmarkCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ESPNStatBlock from "@/components/player/ESPNStatBlock";
-import { usePlayerProfile } from "@/hooks/usePlayerData";
+import { usePlayerProfile, useSendAgentRequest, useMyShortlist, useAddToShortlist, useRemoveFromShortlist } from "@/hooks/usePlayerData";
+import { toast } from "sonner";
 
 const PlayerProfile = () => {
   const { id } = useParams();
   const { data: player, isLoading } = usePlayerProfile(id);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [requestMessage, setRequestMessage] = useState("");
+  const sendRequest = useSendAgentRequest();
+  const { data: shortlist } = useMyShortlist();
+  const addToShortlist = useAddToShortlist();
+  const removeFromShortlist = useRemoveFromShortlist();
+
+  const isShortlisted = shortlist?.some(s => s.player_id === id);
+
+  const handleToggleShortlist = () => {
+    if (!id) return;
+    if (isShortlisted) {
+      removeFromShortlist.mutate(id, {
+        onSuccess: () => toast.success("Removed from shortlist"),
+        onError: () => toast.error("Failed to remove"),
+      });
+    } else {
+      addToShortlist.mutate(id, {
+        onSuccess: () => toast.success("Added to shortlist!"),
+        onError: (e: any) => toast.error(e?.message?.includes("duplicate") ? "Already in shortlist" : "Failed to add"),
+      });
+    }
+  };
+
+  const handleSendRequest = () => {
+    if (!id || !selectedType) return;
+    sendRequest.mutate(
+      { playerId: id, requestType: selectedType, message: requestMessage || undefined },
+      {
+        onSuccess: () => {
+          toast.success("Request sent successfully!");
+          setShowRequestModal(false);
+          setSelectedType(null);
+          setRequestMessage("");
+        },
+        onError: (e: any) => toast.error(e?.message || "Failed to send request"),
+      }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -41,11 +81,22 @@ const PlayerProfile = () => {
     <AgentLayout>
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Back Button */}
-        <Link to="/agent/browse">
-          <Button variant="ghost" className="rounded-xl -ml-2 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Browse
+        <div className="flex items-center justify-between">
+          <Link to="/agent/browse">
+            <Button variant="ghost" className="rounded-xl -ml-2 text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Browse
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            className={`rounded-xl gap-2 ${isShortlisted ? 'border-amber-500/50 text-amber-400 hover:bg-amber-500/10' : ''}`}
+            onClick={handleToggleShortlist}
+            disabled={addToShortlist.isPending || removeFromShortlist.isPending}
+          >
+            {isShortlisted ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+            {isShortlisted ? "Shortlisted" : "Add to Shortlist"}
           </Button>
-        </Link>
+        </div>
 
         {/* ESPN-Style Hero Section */}
         <div className="espn-hero rounded-2xl overflow-hidden">
@@ -235,21 +286,45 @@ const PlayerProfile = () => {
               Select the type of opportunity you'd like to discuss with {player.name}.
             </p>
             <div className="space-y-3 mb-6">
-              <button className="w-full p-4 rounded-xl border border-border/50 text-left hover:border-primary hover:bg-primary/5 transition-colors">
+              <button
+                onClick={() => setSelectedType("Trial")}
+                className={`w-full p-4 rounded-xl border text-left transition-colors ${
+                  selectedType === "Trial"
+                    ? "border-primary bg-primary/10 ring-2 ring-primary/30"
+                    : "border-border/50 hover:border-primary hover:bg-primary/5"
+                }`}
+              >
                 <p className="font-semibold">Trial Opportunity</p>
                 <p className="text-sm text-muted-foreground">Invite for a trial at a club</p>
               </button>
-              <button className="w-full p-4 rounded-xl border border-border/50 text-left hover:border-primary hover:bg-primary/5 transition-colors">
+              <button
+                onClick={() => setSelectedType("Representation")}
+                className={`w-full p-4 rounded-xl border text-left transition-colors ${
+                  selectedType === "Representation"
+                    ? "border-primary bg-primary/10 ring-2 ring-primary/30"
+                    : "border-border/50 hover:border-primary hover:bg-primary/5"
+                }`}
+              >
                 <p className="font-semibold">Representation</p>
                 <p className="text-sm text-muted-foreground">Discuss agent representation</p>
               </button>
             </div>
+            <textarea
+              placeholder="Add a message (optional)..."
+              value={requestMessage}
+              onChange={(e) => setRequestMessage(e.target.value)}
+              className="w-full p-3 rounded-xl border border-border/50 bg-secondary/50 text-foreground text-sm mb-6 resize-none h-20 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            />
             <div className="flex gap-3">
-              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setShowRequestModal(false)}>
+              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => { setShowRequestModal(false); setSelectedType(null); setRequestMessage(""); }}>
                 Cancel
               </Button>
-              <Button className="flex-1 rounded-xl bg-red-500 hover:bg-red-600" onClick={() => setShowRequestModal(false)}>
-                Send Request
+              <Button
+                className="flex-1 rounded-xl bg-red-500 hover:bg-red-600"
+                onClick={handleSendRequest}
+                disabled={!selectedType || sendRequest.isPending}
+              >
+                {sendRequest.isPending ? "Sending..." : "Send Request"}
               </Button>
             </div>
           </div>

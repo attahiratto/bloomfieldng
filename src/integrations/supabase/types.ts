@@ -224,6 +224,27 @@ export type Database = {
         }
         Relationships: []
       }
+      shortlist: {
+        Row: {
+          agent_id: string
+          created_at: string
+          id: string
+          player_id: string
+        }
+        Insert: {
+          agent_id: string
+          created_at?: string
+          id?: string
+          player_id: string
+        }
+        Update: {
+          agent_id?: string
+          created_at?: string
+          id?: string
+          player_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

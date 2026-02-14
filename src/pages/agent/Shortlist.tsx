@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AgentLayout from "@/components/layouts/AgentLayout";
-import { Bookmark, Trash2, Filter, SortDesc, Star, Clock, MapPin, Users } from "lucide-react";
+import { Bookmark, Trash2, SortDesc, Star, Clock, Users, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ESPNPlayerCard from "@/components/player/ESPNPlayerCard";
@@ -10,75 +10,70 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const shortlistedPlayers = [
-  { id: 1, name: "Kwame Mensah", age: 19, position: "Forward", country: "Ghana", verified: true, endorsed: true, image: null, stats: { goals: 15, assists: 8, matches: 24 }, addedAt: "2024-01-15", rating: 4.8 },
-  { id: 3, name: "Amadou Diallo", age: 18, position: "Defender", country: "Senegal", verified: true, endorsed: true, image: null, stats: { goals: 2, assists: 5, matches: 22 }, addedAt: "2024-01-12", rating: 4.5 },
-  { id: 4, name: "Samuel Eto'o Jr", age: 20, position: "Forward", country: "Cameroon", verified: true, endorsed: true, image: null, stats: { goals: 22, assists: 11, matches: 30 }, addedAt: "2024-01-18", rating: 4.9 },
-  { id: 6, name: "Yusuf Ibrahim", age: 17, position: "Midfielder", country: "Nigeria", verified: true, endorsed: true, image: null, stats: { goals: 9, assists: 12, matches: 20 }, addedAt: "2024-01-10", rating: 4.6 },
-  { id: 7, name: "Kofi Adu", age: 21, position: "Goalkeeper", country: "Ghana", verified: true, endorsed: true, image: null, stats: { goals: 0, assists: 1, matches: 28 }, addedAt: "2024-01-20", rating: 4.7 },
-  { id: 8, name: "Moussa Koné", age: 18, position: "Midfielder", country: "Mali", verified: true, endorsed: false, image: null, stats: { goals: 7, assists: 14, matches: 25 }, addedAt: "2024-01-08", rating: 4.4 },
-];
+import { useMyShortlist, useRemoveFromShortlist, useAllPlayers } from "@/hooks/usePlayerData";
+import { toast } from "sonner";
 
 type PositionFilter = "all" | "Forward" | "Midfielder" | "Defender" | "Goalkeeper";
-type SortOption = "recent" | "rating" | "goals" | "age";
+type SortOption = "recent" | "goals" | "age";
 
 const Shortlist = () => {
+  const { data: shortlist, isLoading: shortlistLoading } = useMyShortlist();
+  const { data: allPlayers, isLoading: playersLoading } = useAllPlayers();
+  const removeFromShortlist = useRemoveFromShortlist();
   const [positionFilter, setPositionFilter] = useState<PositionFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("recent");
-  const [removedIds, setRemovedIds] = useState<number[]>([]);
 
-  const filteredPlayers = shortlistedPlayers
-    .filter((p) => !removedIds.includes(p.id))
-    .filter((p) => positionFilter === "all" || p.position === positionFilter)
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "rating": return b.rating - a.rating;
-        case "goals": return b.stats.goals - a.stats.goals;
-        case "age": return a.age - b.age;
-        default: return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
-      }
-    });
+  const shortlistedIds = new Set(shortlist?.map(s => s.player_id) ?? []);
+
+  const shortlistedPlayers = useMemo(() => {
+    if (!allPlayers || !shortlist) return [];
+    const shortlistMap = new Map(shortlist.map(s => [s.player_id, s.created_at]));
+    return allPlayers
+      .filter(p => shortlistedIds.has(String(p.id)))
+      .map(p => ({ ...p, addedAt: shortlistMap.get(String(p.id)) ?? "" }));
+  }, [allPlayers, shortlist, shortlistedIds]);
+
+  const filteredPlayers = useMemo(() => {
+    return shortlistedPlayers
+      .filter(p => positionFilter === "all" || p.position === positionFilter)
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "goals": return (b.stats?.goals ?? 0) - (a.stats?.goals ?? 0);
+          case "age": return (a.age ?? 99) - (b.age ?? 99);
+          default: return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        }
+      });
+  }, [shortlistedPlayers, positionFilter, sortBy]);
 
   const positionCounts = {
-    all: shortlistedPlayers.filter((p) => !removedIds.includes(p.id)).length,
-    Forward: shortlistedPlayers.filter((p) => !removedIds.includes(p.id) && p.position === "Forward").length,
-    Midfielder: shortlistedPlayers.filter((p) => !removedIds.includes(p.id) && p.position === "Midfielder").length,
-    Defender: shortlistedPlayers.filter((p) => !removedIds.includes(p.id) && p.position === "Defender").length,
-    Goalkeeper: shortlistedPlayers.filter((p) => !removedIds.includes(p.id) && p.position === "Goalkeeper").length,
+    all: shortlistedPlayers.length,
+    Forward: shortlistedPlayers.filter(p => p.position === "Forward").length,
+    Midfielder: shortlistedPlayers.filter(p => p.position === "Midfielder").length,
+    Defender: shortlistedPlayers.filter(p => p.position === "Defender").length,
+    Goalkeeper: shortlistedPlayers.filter(p => p.position === "Goalkeeper").length,
   };
 
-  const handleRemove = (id: number) => {
-    setRemovedIds([...removedIds, id]);
+  const handleRemove = (playerId: string) => {
+    removeFromShortlist.mutate(playerId, {
+      onSuccess: () => toast.success("Removed from shortlist"),
+      onError: () => toast.error("Failed to remove"),
+    });
   };
 
-  const handleClearAll = () => {
-    setRemovedIds(shortlistedPlayers.map((p) => p.id));
-  };
+  const isLoading = shortlistLoading || playersLoading;
 
   return (
     <AgentLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-3xl font-bold mb-2 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
-                <Bookmark className="w-5 h-5 text-white" />
-              </div>
-              My Shortlist
-            </h1>
-            <p className="text-muted-foreground">Players you've saved for review and outreach.</p>
-          </div>
-          <Button 
-            variant="outline" 
-            className="rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10"
-            onClick={handleClearAll}
-            disabled={positionCounts.all === 0}
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Clear All
-          </Button>
+        <div>
+          <h1 className="font-display text-3xl font-bold mb-2 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center">
+              <Bookmark className="w-5 h-5 text-white" />
+            </div>
+            My Shortlist
+          </h1>
+          <p className="text-muted-foreground">Players you've saved for review and outreach.</p>
         </div>
 
         {/* Stats Overview */}
@@ -94,30 +89,18 @@ const Shortlist = () => {
                 <p className="text-xs text-white/50 uppercase tracking-wider mt-1">Total Saved</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-lg">⚽</span>
-                </div>
                 <p className="font-display text-3xl font-black text-red-400">{positionCounts.Forward}</p>
                 <p className="text-xs text-white/50 uppercase tracking-wider mt-1">Forwards</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-lg">🎯</span>
-                </div>
                 <p className="font-display text-3xl font-black text-blue-400">{positionCounts.Midfielder}</p>
                 <p className="text-xs text-white/50 uppercase tracking-wider mt-1">Midfielders</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-lg">🛡️</span>
-                </div>
                 <p className="font-display text-3xl font-black text-green-400">{positionCounts.Defender}</p>
                 <p className="text-xs text-white/50 uppercase tracking-wider mt-1">Defenders</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-lg">🧤</span>
-                </div>
                 <p className="font-display text-3xl font-black text-purple-400">{positionCounts.Goalkeeper}</p>
                 <p className="text-xs text-white/50 uppercase tracking-wider mt-1">Goalkeepers</p>
               </div>
@@ -141,15 +124,12 @@ const Shortlist = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="rounded-xl gap-2">
                 <SortDesc className="w-4 h-4" />
-                Sort by: {sortBy === "recent" ? "Recently Added" : sortBy === "rating" ? "Rating" : sortBy === "goals" ? "Goals" : "Age"}
+                Sort by: {sortBy === "recent" ? "Recently Added" : sortBy === "goals" ? "Goals" : "Age"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setSortBy("recent")}>
                 <Clock className="w-4 h-4 mr-2" /> Recently Added
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortBy("rating")}>
-                <Star className="w-4 h-4 mr-2" /> Highest Rating
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSortBy("goals")}>
                 ⚽ <span className="ml-2">Most Goals</span>
@@ -161,35 +141,22 @@ const Shortlist = () => {
           </DropdownMenu>
         </div>
 
-        {/* Results Count */}
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">
-            Showing <span className="font-semibold text-foreground">{filteredPlayers.length}</span> 
-            {positionFilter !== "all" && ` ${positionFilter.toLowerCase()}`} player{filteredPlayers.length !== 1 && "s"}
-          </p>
-        </div>
-
-        {/* ESPN-Style Player Grid */}
-        {filteredPlayers.length > 0 ? (
+        {/* Player Grid */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : filteredPlayers.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPlayers.map((player) => (
               <div key={player.id} className="relative group">
                 <ESPNPlayerCard 
                   player={player} 
                   linkTo={`/agent/player/${player.id}`}
+                  isShortlisted={true}
+                  onToggleShortlist={() => handleRemove(String(player.id))}
+                  shortlistLoading={removeFromShortlist.isPending}
                 />
-                {/* Remove from shortlist button */}
-                <button 
-                  onClick={() => handleRemove(player.id)}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 text-white/60 hover:bg-red-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center z-10"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                {/* Rating badge */}
-                <div className="absolute top-4 left-4 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/90 text-white text-xs font-bold z-10">
-                  <Star className="w-3 h-3 fill-white" />
-                  {player.rating}
-                </div>
               </div>
             ))}
           </div>

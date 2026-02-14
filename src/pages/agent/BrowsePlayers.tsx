@@ -4,18 +4,37 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useMemo } from "react";
 import ESPNPlayerCard from "@/components/player/ESPNPlayerCard";
-import { useAllPlayers } from "@/hooks/usePlayerData";
+import { useAllPlayers, useMyShortlist, useAddToShortlist, useRemoveFromShortlist } from "@/hooks/usePlayerData";
+import { toast } from "sonner";
 
 const positions = ["All Positions", "Forward", "Midfielder", "Defender", "Goalkeeper"];
 const countries = ["All Countries", "Nigeria", "Ghana", "Senegal", "Cameroon", "Kenya"];
 
 const BrowsePlayers = () => {
   const { data: players, isLoading } = useAllPlayers();
+  const { data: shortlist } = useMyShortlist();
+  const addToShortlist = useAddToShortlist();
+  const removeFromShortlist = useRemoveFromShortlist();
   const [search, setSearch] = useState("");
   const [activeFilters, setActiveFilters] = useState({
     position: "All Positions",
     country: "All Countries",
   });
+
+  const shortlistedIds = new Set(shortlist?.map(s => s.player_id) ?? []);
+
+  const handleToggleShortlist = (playerId: string) => {
+    if (shortlistedIds.has(playerId)) {
+      removeFromShortlist.mutate(playerId, {
+        onSuccess: () => toast.success("Removed from shortlist"),
+      });
+    } else {
+      addToShortlist.mutate(playerId, {
+        onSuccess: () => toast.success("Added to shortlist!"),
+        onError: (e: any) => toast.error(e?.message?.includes("duplicate") ? "Already in shortlist" : "Failed to add"),
+      });
+    }
+  };
 
   const filteredPlayers = useMemo(() => {
     if (!players) return [];
@@ -82,6 +101,9 @@ const BrowsePlayers = () => {
                 key={player.id} 
                 player={player} 
                 linkTo={`/agent/player/${player.id}`}
+                isShortlisted={shortlistedIds.has(String(player.id))}
+                onToggleShortlist={handleToggleShortlist}
+                shortlistLoading={addToShortlist.isPending || removeFromShortlist.isPending}
               />
             ))}
           </div>
