@@ -217,6 +217,85 @@ export const useAddVideo = () => {
   });
 };
 
+// Send agent request to a player
+export const useSendAgentRequest = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ playerId, requestType, message }: { playerId: string; requestType: string; message?: string }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const { data, error } = await supabase
+        .from("agent_requests")
+        .insert({ agent_id: user.id, player_id: playerId, request_type: requestType, message: message ?? null })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agent-requests"] });
+    },
+  });
+};
+
+// Shortlist hooks
+export const useMyShortlist = () => {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["shortlist", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data, error } = await supabase
+        .from("shortlist")
+        .select("*")
+        .eq("agent_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!user?.id,
+  });
+};
+
+export const useAddToShortlist = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (playerId: string) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const { data, error } = await supabase
+        .from("shortlist")
+        .insert({ agent_id: user.id, player_id: playerId })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shortlist", user?.id] });
+    },
+  });
+};
+
+export const useRemoveFromShortlist = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (playerId: string) => {
+      if (!user?.id) throw new Error("Not authenticated");
+      const { error } = await supabase
+        .from("shortlist")
+        .delete()
+        .eq("agent_id", user.id)
+        .eq("player_id", playerId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shortlist", user?.id] });
+    },
+  });
+};
+
 // Delete a YouTube video
 export const useDeleteVideo = () => {
   const { user } = useAuth();
