@@ -31,8 +31,8 @@ const AgentLayout = ({ children }: AgentLayoutProps) => {
         {/* Logo */}
         <div className="p-6">
           <Link to="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Bloomfield" className="w-8 h-8 rounded-lg object-contain" />
             <span className="font-display font-bold text-xl tracking-wide">BLOOMFIELD</span>
-            <span className="text-primary">°</span>
           </Link>
         </div>
 

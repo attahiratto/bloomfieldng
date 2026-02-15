@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Shield, Users, Eye, ArrowRight, CheckCircle, AlertTriangle, Globe, BadgeCheck, Sparkles, Zap, Lock } from "lucide-react";
+import { Shield, Users, Eye, ArrowRight, CheckCircle, AlertTriangle, BadgeCheck, Sparkles, Zap, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Landing = () => {
@@ -9,9 +9,7 @@ const Landing = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/60 backdrop-blur-xl border-b border-border/50">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-glow">
-              <Globe className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <img src="/logo.png" alt="Bloomfield" className="w-10 h-10 rounded-xl object-contain" />
             <span className="font-display font-bold text-xl text-foreground">Bloomfield</span>
           </div>
           <div className="flex items-center gap-3">
@@ -224,9 +222,7 @@ const Landing = () => {
       <footer className="py-8 px-6 border-t border-border/50">
         <div className="container mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Globe className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <img src="/logo.png" alt="Bloomfield" className="w-8 h-8 rounded-lg object-contain" />
             <span className="font-display font-semibold text-foreground">Bloomfield</span>
           </div>
           <p className="text-sm text-muted-foreground">
