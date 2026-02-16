@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useMyAgentRequests, useUpdateAgentRequest } from "@/hooks/usePlayerData";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
+import { useToast } from "@/hooks/use-toast";
 
 type AgentRequest = Tables<"agent_requests">;
 
@@ -19,6 +20,7 @@ const AgentRequests = () => {
   const updateRequest = useUpdateAgentRequest();
   const [selectedRequest, setSelectedRequest] = useState<AgentRequest | null>(null);
   const [agentProfiles, setAgentProfiles] = useState<Record<string, AgentInfo>>({});
+  const { toast } = useToast();
 
   // Fetch agent profiles for all requests
   useEffect(() => {
@@ -39,12 +41,26 @@ const AgentRequests = () => {
   }, [requests]);
 
   const handleAccept = (id: string) => {
-    updateRequest.mutate({ id, status: "accepted" });
+    updateRequest.mutate({ id, status: "accepted" }, {
+      onSuccess: () => {
+        toast({ title: "Request accepted", description: "The agent can now view your contact details." });
+      },
+      onError: () => {
+        toast({ title: "Error", description: "Failed to accept the request. Please try again.", variant: "destructive" });
+      },
+    });
     setSelectedRequest(null);
   };
 
   const handleDecline = (id: string) => {
-    updateRequest.mutate({ id, status: "declined" });
+    updateRequest.mutate({ id, status: "declined" }, {
+      onSuccess: () => {
+        toast({ title: "Request declined", description: "The agent has been notified." });
+      },
+      onError: () => {
+        toast({ title: "Error", description: "Failed to decline the request. Please try again.", variant: "destructive" });
+      },
+    });
     setSelectedRequest(null);
   };
 
