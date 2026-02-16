@@ -98,9 +98,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   };
 
+  const navigate = useNavigate();
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setRole(null);
+    navigate("/");
   };
 
   return (
