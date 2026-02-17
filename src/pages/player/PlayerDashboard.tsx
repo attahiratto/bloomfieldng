@@ -35,7 +35,7 @@ const PlayerDashboard = () => {
         </div>
 
         {/* ESPN-Style Stats Grid */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link to="/player/profile">
             <div className="espn-card rounded-xl overflow-hidden hover:scale-[1.02] transition-transform cursor-pointer">
               <div className="h-1 bg-gradient-to-r from-green-500 to-emerald-400" />
@@ -88,7 +88,7 @@ const PlayerDashboard = () => {
           <div className="h-1.5 espn-hero-accent" />
           <div className="p-6">
             <h2 className="font-display text-xl font-bold text-white mb-4">Your Season Stats</h2>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
               <div className="text-center">
                 <p className="font-display text-3xl font-black text-white">{stats?.goals ?? 0}</p>
                 <p className="text-xs text-white/50 uppercase tracking-wider mt-1">Goals</p>
